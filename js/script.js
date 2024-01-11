@@ -213,4 +213,19 @@ const PLAYER = (function(){
     
 })();
 
+const WEBMANAGER = (function(){
+    const sections = document.querySelectorAll('body > section');
+
+
+    sections.forEach(section=>{
+        section.addEventListener('animationend', (event) => {
+            // Apply the final style after the animation completes
+            if(event.target == section){
+                section.style.display = "none";
+            }
+        }, { once: true });
+    })
+
+})();
+
 GAME.startGame();

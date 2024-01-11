@@ -3,23 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./css/index.css">;
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+    <link rel="icon" href="./assets/imgs/ico.png" type="image/x-icon">
+    <link rel="stylesheet" href="./css/index.css">
     <script src="./js/script.js" defer></script>
     <title>Tic Tac Toe</title>
 </head>
 <body>
-    <section class="gameboard">
-        <button class="cell" data-index="0"><span></span></button>   
-        <button class="cell" data-index="1"><span></span></button>   
-        <button class="cell" data-index="2"><span></span></button>
+    <h1>Tic Tac <span>Fighters</span></h1>
+    <section class="menu">
+        <div class="main">
+            <div class="card player">
+                <div class="name">
+                    <input type="text" readonly value="Vega">
+                </div>
 
-        <button class="cell" data-index="3"><span></span></button>   
-        <button class="cell" data-index="4"><span></span></button>   
-        <button class="cell" data-index="5"><span></span></button>
+                <div class="avatar">
+                    <button>
+                        <span class="material-icons-outlined">
+                            arrow_back_ios
+                        </span>
+                    </button>
+                    <img src="./assets/imgs/avatar/a1.gif" alt="">
+                    <button>
+                        <span class="material-icons-outlined">
+                            arrow_forward_ios
+                        </span>
+                    </button>
+                </div>
+                
+                <div class="type">
+                    <button>
+                        <span class="material-icons-outlined">
+                            arrow_back_ios
+                        </span>
+                    </button>
+                    <input type="text" name="type" id="type" readonly value="Player" title="Type">
+                    <button>
+                        <span class="material-icons-outlined">
+                            arrow_forward_ios
+                        </span>
+                    </button>
+                </div>
 
-        <button class="cell" data-index="6"><span></span></button>   
-        <button class="cell" data-index="7"><span></span></button>   
-        <button class="cell" data-index="8"><span></span></button>
+                <div class="marker">
+                    <input type="text" name="marker" id="marker" readonly value="X" title="Marker">
+                </div>
+            </div>
+    
+            <div class="vs">
+                VS
+            </div>
+    
+            <div class="card bot">
+                <div class="name">
+                    <input type="text" readonly value="Diane">
+                </div>
+
+                <div class="avatar">
+                    <button>
+                        <span class="material-icons-outlined">
+                            arrow_back_ios
+                        </span>
+                    </button>
+                    <img src="./assets/imgs/avatar/a2.gif" alt="" class="flipped">
+                    <button>
+                        <span class="material-icons-outlined">
+                            arrow_forward_ios
+                        </span>
+                    </button>
+                </div>
+                
+                <div class="type">
+                    <button>
+                        <span class="material-icons-outlined">
+                            arrow_back_ios
+                        </span>
+                    </button>
+                    <input type="text" name="type" id="type" readonly value="Player" title="Type">
+                    <button>
+                        <span class="material-icons-outlined">
+                            arrow_forward_ios
+                        </span>
+                    </button>
+                </div>
+
+                <div class="marker">
+                    <input type="text" name="marker" id="marker" readonly value="O" title="Marker">
+                </div>
+            </div>
+        </div>
+        <div class="sub">
+            <button>Start</button>
+        </div>
     </section>
+    <section class="intro hidden"></section>
+    <section class="game hidden">
+        <div class="gameboard">
+            <button class="cell" data-index="0"><span></span></button>   
+            <button class="cell" data-index="1"><span></span></button>   
+            <button class="cell" data-index="2"><span></span></button>
+    
+            <button class="cell" data-index="3"><span></span></button>   
+            <button class="cell" data-index="4"><span></span></button>   
+            <button class="cell" data-index="5"><span></span></button>
+    
+            <button class="cell" data-index="6"><span></span></button>   
+            <button class="cell" data-index="7"><span></span></button>   
+            <button class="cell" data-index="8"><span></span></button>
+        </div>
+    </section>
+
 </body>
 </html>

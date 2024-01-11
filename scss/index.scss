@@ -1,64 +1,290 @@
 @import "./variables"; 
-@import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Permanent+Marker&display=swap');
+
 
 *{
     padding: 0;
     margin: 0;
     box-sizing: border-box;
+    font-family: "Inter", sans-serif;
+    font-family: "Permanent Marker", cursive;
+    // font-family: "Inter", sans-serif;
+    // font-family: "Press Start 2P", system-ui;
 }
 
 body{
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: rgb(43, 43, 43);
+    // background-color: $black;
+    background-color: whitesmoke;
     min-height: 100vh;
+
+    display: flex;
+    flex-flow: column;
+    gap: max(5vh, 40px);
 }
 
-section.gameboard{
-    width: min(90vw, 500px);
-    height: min(90vw, 500px);
+h1{
+    font-size: 4rem;
+    user-select: none;
+    margin-top: 2vh;
+    text-align: center;
 
-    display: grid;
-    grid-template: 1fr 1fr 1fr / 1fr 1fr 1fr;
-    gap: min(1vw, 10px);
-
-    button.cell{
-        background-color: white;
-        border: none;
-        
-        font-family: "Permanent Marker", cursive;
-        font-size: 5rem;
-        user-select: none;
-        color: $marker-clr;
-
+    span{
+        color: $positive-clr;
     }
+}
 
-    button.cell:hover{
-        cursor: pointer;
-        // background-color: red;
-    }
-
-    button.winning-cell{
-        color: #e65e5e;
-    }
-
-    button.cell span{
-        transition-duration: 200ms;
-    }
-
-    @keyframes marker-appear {
-        from {
-            scale: 0;
-        }
-        to {
-            scale: 1;
-        }
-    }
+section.menu{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+    gap: max(5vh, 50px);
     
-    /* Apply the animation to the text */
-    .marker-appear {
-        display: block;
-        animation: marker-appear 0.2s ease-in-out;
+    div.main{
+        width: max(70%, 900px);
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        justify-items: center;
+        grid-template-rows: 1fr;
+        align-items: center;
+        gap: max(5vw, 50px);
+    }
+
+    div.sub{
+        width: 100%;
+        text-align: center;
+    }
+
+    div.sub > button{
+        background-color: transparent;
+        border: none;
+        color: $black;
+        transition-duration: 200ms;
+        font-size: 3rem;
+        margin-bottom: 2vh;
+    }
+
+    div.sub > button:hover{
+        cursor: pointer;
+        color: $positive-clr;
+        // text-shadow: 0 0 10px rgb(176, 116, 244);
+    }
+
+    div.card{
+        width: 100%;
+        height: fit-content;
+        box-shadow: 0 0 5px rgba(77, 76, 76, 0.509);
+        border-radius: 10px;
+        background-color: white;
+        padding: max(1.5vw, 15px);
+
+        display: flex;
+        flex-flow: column;
+        gap: max(2vh, 20px);
+    }
+
+    div.card > div{
+        width: 100%;
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: space-between;
+        align-items: center;
+        gap: max(2vw, 20px);
+    }
+
+    div.card .name input{
+        font-size: 5rem;
+    }
+
+    input:focus{
+        outline: none;
+    }
+
+    div.card > div input{
+        // font-family: "Inter", sans-serif;
+        width: 100%;
+        padding: max(0.3vh, 3px) max(0.3vw, 5px);
+        font-weight: 1000;
+        text-align: center;
+        font-size: 2rem;
+
+        border: none;
+    }
+
+    div.card > div button{
+
+        font-weight: 700;
+        height: fit-content;
+        padding: max(0.3vh, 3px) max(0.3vw, 5px);
+        color: $black;
+        border-radius: 5px;
+        background-color: transparent;
+        border: none;
+        font-size: 2rem;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        transition-duration: 100ms;
+    }
+
+
+    div.card > div button:hover{
+        cursor: pointer;
+        color: $positive-clr;
+        scale: 1.2;
+    }
+
+    div.card input{
+        border-radius: 5px;
+        border-color: $black;
+    }
+
+    div.card img{
+        width: 150px;
+    }
+
+    div.card .flipped{
+        transform: scaleX(-1);
+    }
+
+    @keyframes floatAnimation {
+        0%{
+            transform: translateY(0);
+        }
+        100% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(-20px);
+        }
+    }
+
+    div.vs{
+        font-size: 5rem;
+        // animation: floatAnimation 1s infinite;
+    }
+
+    
+}
+
+section.game{
+    div.gameboard{
+        width: min(90vw, 500px);
+        height: min(90vw, 500px);
+    
+        display: grid;
+        grid-template: 1fr 1fr 1fr / 1fr 1fr 1fr;
+        gap: min(1vw, 10px);
+    
+        button.cell{
+            background-color: white;
+            border: none;
+    
+            font-size: 5rem;
+            user-select: none;
+            color: $marker-clr;
+    
+        }
+    
+        button.cell:hover{
+            cursor: pointer;
+            // background-color: red;
+        }
+    
+        button.winning-cell{
+            color: #e65e5e;
+        }
+    
+        button.cell span{
+            font-family: "Permanent Marker", cursive;
+        }
+    
+        @keyframes marker-appear {
+            from {
+                scale: 0;
+            }
+            to {
+                scale: 1;
+            }
+        }
+        
+        /* Apply the animation to the text */
+        .marker-appear {
+            display: block;
+            animation: marker-appear 0.2s ease-in-out;
+        }
+    }
+}
+
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+section.fade{
+    animation: fadeOut 1s ease-in-out;
+    animation-iteration-count: 1;
+}
+
+section.hidden{
+    display: none;
+}
+
+@media screen and (max-width: 1200px) {
+
+    h1{
+        font-size: 3rem;
+    }
+
+    section.menu{
+        div.card .name input{
+            font-size: 3rem;
+        }
+
+        div.main{
+            width: 100%;
+            grid-template-columns: 1fr;
+
+            div.card{
+                width: max(40%, 300px);
+            }
+        }
+
+        div.vs{
+            font-size: 3rem;
+        }
+    }
+}
+
+@media screen and (max-width: 500px) {
+
+    h1{
+        font-size: 2rem;
+    }
+
+    section.menu{
+        div.main div.card .name input{
+            font-size: 2rem;
+        }
+
+        div.main div.vs{
+            font-size: 2rem;
+        }
+
+        div.sub button{
+            font-size: 3rem;
+        }
     }
 }
