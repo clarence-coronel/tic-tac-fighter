@@ -1,0 +1,54 @@
+@import url("https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap");
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(43, 43, 43);
+  min-height: 100vh;
+}
+
+section.gameboard {
+  width: min(90vw, 500px);
+  height: min(90vw, 500px);
+  display: grid;
+  grid-template: 1fr 1fr 1fr/1fr 1fr 1fr;
+  gap: min(1vw, 10px);
+  /* Apply the animation to the text */
+}
+section.gameboard button.cell {
+  background-color: white;
+  border: none;
+  font-family: "Permanent Marker", cursive;
+  font-size: 5rem;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+  color: rgb(74, 74, 74);
+}
+section.gameboard button.cell:hover {
+  cursor: pointer;
+}
+section.gameboard button.winning-cell {
+  color: #e65e5e;
+}
+section.gameboard button.cell span {
+  transition-duration: 200ms;
+}
+@keyframes marker-appear {
+  from {
+    scale: 0;
+  }
+  to {
+    scale: 1;
+  }
+}
+section.gameboard .marker-appear {
+  display: block;
+  animation: marker-appear 0.2s ease-in-out;
+}/*# sourceMappingURL=index.css.map */
