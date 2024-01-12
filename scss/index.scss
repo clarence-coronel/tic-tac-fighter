@@ -10,11 +10,13 @@
     font-family: "Permanent Marker", cursive;
     // font-family: "Inter", sans-serif;
     // font-family: "Press Start 2P", system-ui;
+
+    // cursor: url("https://res.cloudinary.com/dvkugaw3b/image/upload/v1641562028/cursor_ad12rf.png"), auto;
 }
 
 body{
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     // background-color: $black;
     background-color: whitesmoke;
@@ -25,15 +27,8 @@ body{
     gap: max(5vh, 40px);
 }
 
-h1{
-    font-size: 4rem;
-    user-select: none;
-    margin-top: 2vh;
-    text-align: center;
-
-    span{
-        color: $positive-clr;
-    }
+.flipped{
+    transform: scaleX(-1);
 }
 
 section.menu{
@@ -44,7 +39,18 @@ section.menu{
     justify-content: center;
     align-items: center;
     gap: max(5vh, 50px);
+
+    h1{
+        font-size: 4rem;
+        user-select: none;
+        margin-top: 2vh;
+        text-align: center;
     
+        span{
+            color: $positive-clr;
+        }
+    }
+
     div.main{
         width: max(70%, 900px);
         display: grid;
@@ -134,7 +140,6 @@ section.menu{
         transition-duration: 100ms;
     }
 
-
     div.card > div button:hover{
         cursor: pointer;
         color: $positive-clr;
@@ -148,10 +153,8 @@ section.menu{
 
     div.card img{
         width: 150px;
-    }
-
-    div.card .flipped{
-        transform: scaleX(-1);
+        // filter: grayscale(100%);
+        position: relative;
     }
 
     @keyframes floatAnimation {
@@ -170,26 +173,151 @@ section.menu{
         font-size: 5rem;
         // animation: floatAnimation 1s infinite;
     }
-
     
+    .appear{
+        animation: appear 0.2s ease-in-out;
+    }
+
+    .hidden{
+        display: none;
+    }
 }
 
 section.game{
+    width: 100%;
+    height: 100%;
+
+    flex: 1 1 auto;
+
+    display: flex;
+    flex-flow: column;
+    justify-content: space-around;
+    align-items: center;
+
+    gap: max(2vh, 20px);
+
+
+    div.btn-container{
+        width: 100%;
+        text-align: left;
+        padding: 0 max(10vw, 50px);
+
+        button{
+            background-color: transparent;
+            border: none;
+            font-size: 2rem;
+        }
+
+        button:hover{
+            cursor: pointer;
+            color: $positive-clr;
+        }
+    }
+
+    div.health-bar{
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: space-between;
+        width: 100%;
+        padding: 0 max(10vw, 50px);
+        overflow: hidden;
+
+        .p1, .p2{
+            width: 40%;
+            display: flex;
+            flex-flow: column;
+        }
+
+        .p1{
+            align-items: flex-start; 
+        }
+
+        .p2{
+            align-items: flex-end;
+        }
+
+        .outer{
+            width: 100%;
+            height: 20px;
+            background-color: gray;
+
+            // border-radius: 5px;
+            overflow: hidden;
+            display: flex;
+        }
+
+        .inner{
+            width: 0%;
+            height: 100%;
+            transition-duration: 100ms;
+            background-color: rgb(71, 211, 71);
+        }
+
+        .load-health{
+            width: 100%;
+            animation: loadHealth 1s ease-in-out;
+        }
+
+        .p1 .outer{
+            flex-flow: row;
+        }
+
+        .p2 .outer{
+            flex-flow: row-reverse;
+        }
+
+        img{
+            width: 100px;
+        }
+
+        .name{
+            font-size: 2rem;
+        }
+
+        @keyframes appear-l-to-r {
+            from {
+                transform: translate(-100vw, 0);
+            }
+            to {
+                transform: translate(0, 0);
+            }
+        }
+
+        @keyframes appear-r-to-l {
+            from {
+                transform: translate(100vw, 0);
+            }
+            to {
+                transform: translate(0, 0);
+            }
+        }
+
+        .appear-l-to-r{
+            animation: appear-l-to-r 0.5s ease-in-out;
+        }
+
+        .appear-r-to-l{
+            animation: appear-r-to-l 0.5s ease-in-out;
+        }
+    }
+
     div.gameboard{
+        
         width: min(90vw, 500px);
         height: min(90vw, 500px);
     
         display: grid;
         grid-template: 1fr 1fr 1fr / 1fr 1fr 1fr;
-        gap: min(1vw, 10px);
+        gap: max(1vw, 10px);
     
         button.cell{
             background-color: white;
             border: none;
-    
+            border-radius: 10px;
             font-size: 5rem;
             user-select: none;
             color: $marker-clr;
+            box-shadow: 0 0 2px rgba(70, 70, 70, 0.51);
     
         }
     
@@ -221,34 +349,135 @@ section.game{
             animation: marker-appear 0.2s ease-in-out;
         }
     }
+
+    div.fadeIn{
+        animation: fadeIn 0.5s ease-in-out;
+    }
 }
 
+section.intro{
+    width: 100%;
+    min-height: 100vh;
+    // background-color: red;
+
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+    gap: max(5vh, 40px);
+    // padding: max(10vh, 70px) max(10vw, 70px);
+
+    .upper-intro{
+        display: flex;
+        flex-flow: row nowrap;
+        gap: max(3vw, 30px);
+        font-size: 5rem;
+
+        .player{
+            scale: 0;
+            font-size: inherit;
+            transition-duration: 200ms;
+        }
+
+        .vs{
+            scale: 0;
+            font-size: inherit;
+        }
+
+        .appear{
+            scale: 1;
+            animation: appear 0.2s ease-in-out;
+        }
+
+        .reverse-appear{
+            animation: revese-appear 0.2s ease-in-out;
+        }
+    }
+
+    .lower-intro{
+        .countdown{
+            font-size: 10rem;
+            scale: 0;
+        }
+
+        .appear{
+            scale: 1;
+            animation: appear 0.2s ease-in-out;
+        }
+
+        .reverse-appear{
+            animation: reverse-appear 0.2s ease-in-out;
+        }
+    }
+    
+}
+
+@keyframes appear {
+    from {
+        scale: 0;
+    }
+    to {
+        scale: 1;
+    }
+}
+
+@keyframes reverse-appear {
+    from {
+        scale: 1;
+    }
+    to {
+        scale: 0;
+    }
+}
 
 @keyframes fadeOut {
     from {
-        opacity: 1;;
+        opacity: 1;
     }
     to {
         opacity: 0;
     }
 }
 
-section.fade{
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes loadHealth {
+    from {
+        width: 0%;
+    }
+    to {
+        width: 100%;
+    }
+}
+
+section.fadeOut{
     animation: fadeOut 1s ease-in-out;
     animation-iteration-count: 1;
 }
 
 section.hidden{
-    display: none;
+   display: none; 
+}
+
+section.fadeOut{
+    animation: fadeOut 0.5s ease-in-out;
 }
 
 @media screen and (max-width: 1200px) {
 
-    h1{
-        font-size: 3rem;
-    }
-
     section.menu{
+
+        h1{
+            font-size: 3rem;
+        }
+
         div.card .name input{
             font-size: 3rem;
         }
@@ -267,14 +496,28 @@ section.hidden{
         }
     }
 }
+@media screen and (max-width: 900px) {
+    section.intro {
+        .upper-intro{
+            flex-flow: column;
+            align-items: center;
+            font-size: 4rem;
+        }
 
+        .lower-intro{
+            .countdown{
+                font-size: 7rem;
+            }
+        }
+    }
+}
 @media screen and (max-width: 500px) {
 
-    h1{
-        font-size: 2rem;
-    }
-
     section.menu{
+        h1{
+            font-size: 2rem;
+        }
+
         div.main div.card .name input{
             font-size: 2rem;
         }
@@ -287,4 +530,28 @@ section.hidden{
             font-size: 3rem;
         }
     }
+
+    section.game {
+
+        div.btn-container{
+            padding: 0 max(4vw, 20px);
+
+            button{
+                font-size: 1.5rem;
+            }
+        }
+
+        div.health-bar{
+            padding: 0 max(4vw, 20px);
+
+            .name{
+                font-size: 1rem;
+            }
+
+            img{
+                width: 70px;
+            }
+        }
+    }
+    
 }

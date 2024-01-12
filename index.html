@@ -10,8 +10,8 @@
     <title>Tic Tac Toe</title>
 </head>
 <body>
-    <h1>Tic Tac <span>Fighters</span></h1>
     <section class="menu">
+        <h1>Tic Tac <span>Fighters</span></h1>
         <div class="main">
             <div class="card player">
                 <div class="name">
@@ -97,8 +97,28 @@
             <button>Start</button>
         </div>
     </section>
-    <section class="intro hidden"></section>
+
+    <section class="intro hidden">
+        <div class="upper-intro">
+            <div class="player p1">
+                Vega
+            </div>
+            <div class="vs">Vs</div>
+            <div class="player p2">
+                Diane
+            </div>
+        </div>
+        <div class="lower-intro">
+            <div class="countdown">3</div>
+        </div>
+        
+    </section>
+
     <section class="game hidden">
+        <div class="btn-container">
+            <button>Back</button>
+        </div>
+
         <div class="gameboard">
             <button class="cell" data-index="0"><span></span></button>   
             <button class="cell" data-index="1"><span></span></button>   
@@ -112,7 +132,23 @@
             <button class="cell" data-index="7"><span></span></button>   
             <button class="cell" data-index="8"><span></span></button>
         </div>
-    </section>
 
+        <div class="health-bar">
+            <div class="p1">
+                <img src="./assets/imgs/avatar/a1.gif" alt="">
+                <div class="outer">
+                    <div class="inner"></div>
+                </div>
+                <span class="name">Vega</span>
+            </div>
+            <div class="p2">
+                <img src="./assets/imgs/avatar/a1.gif" alt="" class="flipped">
+                <div class="outer">
+                    <div class="inner"></div>
+                </div>
+                <span class="name">Vega</span>
+            </div>
+        </div>
+    </section>
 </body>
 </html>

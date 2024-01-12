@@ -214,18 +214,164 @@ const PLAYER = (function(){
 })();
 
 const WEBMANAGER = (function(){
-    const sections = document.querySelectorAll('body > section');
+    document.addEventListener("DOMContentLoaded", listeners);
 
+    function listeners(){
+        const sections = document.querySelectorAll('body > section');
+        sections.forEach(section=>{
+            section.addEventListener('animationend', (event) => {
+                // Apply the final style after the animation completes
+                if(event.target == section){
+                    section.classList.add("hidden");
+                }
+            });
+        })
 
-    sections.forEach(section=>{
-        section.addEventListener('animationend', (event) => {
-            // Apply the final style after the animation completes
-            if(event.target == section){
-                section.style.display = "none";
+        const btnContainerGame = document.querySelector(".game .btn-container");
+        btnContainerGame.addEventListener("click", resetAnim);
+
+        const start = document.querySelector(".menu .sub button");
+        
+        start.addEventListener("click", startAnim);
+    }
+    
+    function startAnim(){
+        const menu = document.querySelector(".menu");
+        const intro = document.querySelector(".intro");
+        
+        const p1 = document.querySelector(".intro .p1");
+        const p2 = document.querySelector(".intro .p2");
+        const vs = document.querySelector(".intro .vs");
+        const cd = document.querySelector(".intro .countdown");
+        const game = document.querySelector(".game");
+        const btnContainerGame = document.querySelector(".game .btn-container");
+        let counter = 0;
+        menu.classList.add("fadeOut");
+
+        const p1Game = document.querySelector(".game .p1");
+        const p2Game = document.querySelector(".game .p2");
+        const innerHealth = document.querySelectorAll(".inner");
+        const gameboard = document.querySelector(".gameboard");
+
+        const anim = setInterval(()=>{
+            counter++;
+            if(counter == 1) intro.classList.remove("hidden");
+            else if (counter == 2) p1.classList.add("appear");
+            else if (counter == 3) vs.classList.add("appear");
+            else if (counter == 4) p2.classList.add("appear");
+            else if (counter == 6) {
+                cd.classList.add("appear");
+                cd.innerText = "3";
             }
-        }, { once: true });
-    })
+            else if (counter == 7) {
+                cd.classList.remove("appear");
+                cd.classList.add("reverse-appear");
+            }
+            else if (counter == 8) {
+                cd.classList.add("appear");
+                cd.classList.remove("reverse-appear");
+                cd.innerText = "2";
+            }
+            else if (counter == 9) {
+                cd.classList.remove("appear");
+                cd.classList.add("reverse-appear");
+            }
+            else if (counter == 10) {
+                cd.classList.add("appear");
+                cd.classList.remove("reverse-appear");
+                cd.innerText = "1";
+            }
+            else if (counter == 11) {
+                cd.classList.remove("appear");
+                cd.classList.add("reverse-appear");
+            }
+            else if (counter == 12) {
+                cd.classList.add("appear");
+                cd.classList.remove("reverse-appear");
+                cd.innerText = "FIGHT!";
+            }
+            else if (counter == 14) {
+                intro.classList.add("fadeOut");
+            }
+            else if (counter == 15) {
+                intro.classList.remove("fadeOut");
+                intro.classList.add("hidden");
+                p1.classList.remove("appear");
+                vs.classList.remove("appear");
+                p2.classList.remove("appear");
+                cd.classList.remove("appear");
+                menu.classList.remove("fadeOut");
 
+                gameboard.classList.add("fadeIn");
+                btnContainerGame.classList.add("fadeIn");
+                game.classList.remove("hidden");
+                p1Game.classList.add("appear-l-to-r");
+                p2Game.classList.add("appear-r-to-l");
+            }
+            else if(counter == 16){
+                innerHealth.forEach(health=>{
+                    health.classList.add("load-health");
+                })
+                GAME.startGame();
+                removeInterval(anim);
+            }
+        },500)
+    }
+
+    function resetAnim(){
+        const start = document.querySelector(".menu .sub button");
+        const menu = document.querySelector(".menu");
+        const intro = document.querySelector(".intro");
+
+        const p1 = document.querySelector(".intro .p1");
+        const p2 = document.querySelector(".intro .p2");
+        const vs = document.querySelector(".intro .vs");
+        const cd = document.querySelector(".intro .countdown");
+        const game = document.querySelector(".game");
+
+        const p1Game = document.querySelector(".game .p1");
+        const p2Game = document.querySelector(".game .p2");
+        const innerHealth = document.querySelectorAll(".inner");
+        const gameboard = document.querySelector(".gameboard");
+        const btnContainerGame = document.querySelector(".game .btn-container");
+
+        const h1Menu = document.querySelector(".menu h1");
+        const main = document.querySelector(".menu .main");
+        const sub = document.querySelector(".menu .sub");
+
+        let counter = 0;
+
+        game.classList.add("fadeOut");
+
+
+        setInterval(()=>{
+            counter++;
+
+            if(counter == 2){
+                menu.classList.remove("hidden");
+                menu.classList.remove("fadeOut");
+
+                h1Menu.classList.add("appear");
+                main.classList.add("appear");
+                sub.classList.add("appear");
+            }
+            else if (counter == 3){
+                game.classList.remove("fadeOut");
+                
+                // Reset animation, remove added classes
+                gameboard.classList.remove("fadeIn");
+                btnContainerGame.classList.remove("fadeIn");
+                p1Game.classList.remove("appear-l-to-r");
+                p2Game.classList.remove("appear-r-to-l");
+            }
+        },500)
+    }
+
+    function removeInterval(interval){
+        clearInterval(interval);
+    }
+
+    return {
+        removeInterval,
+    };
 })();
-
-GAME.startGame();

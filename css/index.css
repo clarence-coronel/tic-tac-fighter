@@ -9,7 +9,7 @@
 
 body {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   background-color: whitesmoke;
   min-height: 100vh;
@@ -18,16 +18,8 @@ body {
   gap: max(5vh, 40px);
 }
 
-h1 {
-  font-size: 4rem;
-  -webkit-user-select: none;
-     -moz-user-select: none;
-          user-select: none;
-  margin-top: 2vh;
-  text-align: center;
-}
-h1 span {
-  color: #e65e5e;
+.flipped {
+  transform: scaleX(-1);
 }
 
 section.menu {
@@ -38,6 +30,17 @@ section.menu {
   justify-content: center;
   align-items: center;
   gap: max(5vh, 50px);
+}
+section.menu h1 {
+  font-size: 4rem;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+  margin-top: 2vh;
+  text-align: center;
+}
+section.menu h1 span {
+  color: #e65e5e;
 }
 section.menu div.main {
   width: max(70%, 900px);
@@ -124,9 +127,7 @@ section.menu div.card input {
 }
 section.menu div.card img {
   width: 150px;
-}
-section.menu div.card .flipped {
-  transform: scaleX(-1);
+  position: relative;
 }
 @keyframes floatAnimation {
   0% {
@@ -142,23 +143,125 @@ section.menu div.card .flipped {
 section.menu div.vs {
   font-size: 5rem;
 }
+section.menu .appear {
+  animation: appear 0.2s ease-in-out;
+}
+section.menu .hidden {
+  display: none;
+}
 
+section.game {
+  width: 100%;
+  height: 100%;
+  flex: 1 1 auto;
+  display: flex;
+  flex-flow: column;
+  justify-content: space-around;
+  align-items: center;
+  gap: max(2vh, 20px);
+}
+section.game div.btn-container {
+  width: 100%;
+  text-align: left;
+  padding: 0 max(10vw, 50px);
+}
+section.game div.btn-container button {
+  background-color: transparent;
+  border: none;
+  font-size: 2rem;
+}
+section.game div.btn-container button:hover {
+  cursor: pointer;
+  color: #e65e5e;
+}
+section.game div.health-bar {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0 max(10vw, 50px);
+  overflow: hidden;
+}
+section.game div.health-bar .p1, section.game div.health-bar .p2 {
+  width: 40%;
+  display: flex;
+  flex-flow: column;
+}
+section.game div.health-bar .p1 {
+  align-items: flex-start;
+}
+section.game div.health-bar .p2 {
+  align-items: flex-end;
+}
+section.game div.health-bar .outer {
+  width: 100%;
+  height: 20px;
+  background-color: gray;
+  overflow: hidden;
+  display: flex;
+}
+section.game div.health-bar .inner {
+  width: 0%;
+  height: 100%;
+  transition-duration: 100ms;
+  background-color: rgb(71, 211, 71);
+}
+section.game div.health-bar .load-health {
+  width: 100%;
+  animation: loadHealth 1s ease-in-out;
+}
+section.game div.health-bar .p1 .outer {
+  flex-flow: row;
+}
+section.game div.health-bar .p2 .outer {
+  flex-flow: row-reverse;
+}
+section.game div.health-bar img {
+  width: 100px;
+}
+section.game div.health-bar .name {
+  font-size: 2rem;
+}
+@keyframes appear-l-to-r {
+  from {
+    transform: translate(-100vw, 0);
+  }
+  to {
+    transform: translate(0, 0);
+  }
+}
+@keyframes appear-r-to-l {
+  from {
+    transform: translate(100vw, 0);
+  }
+  to {
+    transform: translate(0, 0);
+  }
+}
+section.game div.health-bar .appear-l-to-r {
+  animation: appear-l-to-r 0.5s ease-in-out;
+}
+section.game div.health-bar .appear-r-to-l {
+  animation: appear-r-to-l 0.5s ease-in-out;
+}
 section.game div.gameboard {
   width: min(90vw, 500px);
   height: min(90vw, 500px);
   display: grid;
   grid-template: 1fr 1fr 1fr/1fr 1fr 1fr;
-  gap: min(1vw, 10px);
+  gap: max(1vw, 10px);
   /* Apply the animation to the text */
 }
 section.game div.gameboard button.cell {
   background-color: white;
   border: none;
+  border-radius: 10px;
   font-size: 5rem;
   -webkit-user-select: none;
      -moz-user-select: none;
           user-select: none;
   color: rgb(74, 74, 74);
+  box-shadow: 0 0 2px rgba(70, 70, 70, 0.51);
 }
 section.game div.gameboard button.cell:hover {
   cursor: pointer;
@@ -181,7 +284,69 @@ section.game div.gameboard .marker-appear {
   display: block;
   animation: marker-appear 0.2s ease-in-out;
 }
+section.game div.fadeIn {
+  animation: fadeIn 0.5s ease-in-out;
+}
 
+section.intro {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+  gap: max(5vh, 40px);
+}
+section.intro .upper-intro {
+  display: flex;
+  flex-flow: row nowrap;
+  gap: max(3vw, 30px);
+  font-size: 5rem;
+}
+section.intro .upper-intro .player {
+  scale: 0;
+  font-size: inherit;
+  transition-duration: 200ms;
+}
+section.intro .upper-intro .vs {
+  scale: 0;
+  font-size: inherit;
+}
+section.intro .upper-intro .appear {
+  scale: 1;
+  animation: appear 0.2s ease-in-out;
+}
+section.intro .upper-intro .reverse-appear {
+  animation: revese-appear 0.2s ease-in-out;
+}
+section.intro .lower-intro .countdown {
+  font-size: 10rem;
+  scale: 0;
+}
+section.intro .lower-intro .appear {
+  scale: 1;
+  animation: appear 0.2s ease-in-out;
+}
+section.intro .lower-intro .reverse-appear {
+  animation: reverse-appear 0.2s ease-in-out;
+}
+
+@keyframes appear {
+  from {
+    scale: 0;
+  }
+  to {
+    scale: 1;
+  }
+}
+@keyframes reverse-appear {
+  from {
+    scale: 1;
+  }
+  to {
+    scale: 0;
+  }
+}
 @keyframes fadeOut {
   from {
     opacity: 1;
@@ -190,7 +355,23 @@ section.game div.gameboard .marker-appear {
     opacity: 0;
   }
 }
-section.fade {
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes loadHealth {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
+}
+section.fadeOut {
   animation: fadeOut 1s ease-in-out;
   animation-iteration-count: 1;
 }
@@ -199,8 +380,12 @@ section.hidden {
   display: none;
 }
 
+section.fadeOut {
+  animation: fadeOut 0.5s ease-in-out;
+}
+
 @media screen and (max-width: 1200px) {
-  h1 {
+  section.menu h1 {
     font-size: 3rem;
   }
   section.menu div.card .name input {
@@ -217,8 +402,18 @@ section.hidden {
     font-size: 3rem;
   }
 }
+@media screen and (max-width: 900px) {
+  section.intro .upper-intro {
+    flex-flow: column;
+    align-items: center;
+    font-size: 4rem;
+  }
+  section.intro .lower-intro .countdown {
+    font-size: 7rem;
+  }
+}
 @media screen and (max-width: 500px) {
-  h1 {
+  section.menu h1 {
     font-size: 2rem;
   }
   section.menu div.main div.card .name input {
@@ -229,5 +424,20 @@ section.hidden {
   }
   section.menu div.sub button {
     font-size: 3rem;
+  }
+  section.game div.btn-container {
+    padding: 0 max(4vw, 20px);
+  }
+  section.game div.btn-container button {
+    font-size: 1.5rem;
+  }
+  section.game div.health-bar {
+    padding: 0 max(4vw, 20px);
+  }
+  section.game div.health-bar .name {
+    font-size: 1rem;
+  }
+  section.game div.health-bar img {
+    width: 70px;
   }
 }/*# sourceMappingURL=index.css.map */
