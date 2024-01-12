@@ -471,6 +471,23 @@ section.fadeOut{
     animation: fadeOut 0.5s ease-in-out;
 }
 
+footer{
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    align-items: center;
+    gap: max(0.5vw, 5px);
+    margin-top: auto;
+
+    svg{
+        transition-duration: 500ms;
+    }
+
+    svg:hover{
+        transform: rotate(360deg);
+    }
+}
+
 @media screen and (max-width: 1200px) {
 
     section.menu{
