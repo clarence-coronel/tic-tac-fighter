@@ -398,6 +398,7 @@ section.intro{
         .countdown{
             font-size: 10rem;
             scale: 0;
+            color: $positive-clr;
         }
 
         .appear{
@@ -501,12 +502,20 @@ section.fadeOut{
         .upper-intro{
             flex-flow: column;
             align-items: center;
-            font-size: 4rem;
+            font-size: 3rem;
         }
 
         .lower-intro{
             .countdown{
-                font-size: 7rem;
+                font-size: 4rem;
+            }
+        }
+    }
+
+    section.game{
+        div.gameboard{
+            button.cell{
+                font-size: 4rem;
             }
         }
     }
@@ -550,6 +559,12 @@ section.fadeOut{
 
             img{
                 width: 70px;
+            }
+        }
+
+        div.gameboard{
+            button.cell{
+                font-size: 3rem;
             }
         }
     }

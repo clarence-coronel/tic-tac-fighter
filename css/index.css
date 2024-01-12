@@ -322,6 +322,7 @@ section.intro .upper-intro .reverse-appear {
 section.intro .lower-intro .countdown {
   font-size: 10rem;
   scale: 0;
+  color: #e65e5e;
 }
 section.intro .lower-intro .appear {
   scale: 1;
@@ -406,10 +407,13 @@ section.fadeOut {
   section.intro .upper-intro {
     flex-flow: column;
     align-items: center;
-    font-size: 4rem;
+    font-size: 3rem;
   }
   section.intro .lower-intro .countdown {
-    font-size: 7rem;
+    font-size: 4rem;
+  }
+  section.game div.gameboard button.cell {
+    font-size: 4rem;
   }
 }
 @media screen and (max-width: 500px) {
@@ -439,5 +443,8 @@ section.fadeOut {
   }
   section.game div.health-bar img {
     width: 70px;
+  }
+  section.game div.gameboard button.cell {
+    font-size: 3rem;
   }
 }/*# sourceMappingURL=index.css.map */
