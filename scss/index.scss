@@ -104,7 +104,11 @@ section.menu{
     }
 
     div.card .name input{
-        font-size: 5rem;
+        font-size: 3rem;
+    }
+
+    div.card .avatar input{
+        display: none;
     }
 
     input:focus{
@@ -153,6 +157,7 @@ section.menu{
 
     div.card img{
         width: 150px;
+        height: 200px;
         // filter: grayscale(100%);
         position: relative;
     }
@@ -478,6 +483,8 @@ footer{
     align-items: center;
     gap: max(0.5vw, 5px);
     margin-top: auto;
+    font-family: "Inter", sans-serif;
+    overflow: hidden;
 
     svg{
         transition-duration: 500ms;

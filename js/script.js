@@ -211,14 +211,18 @@ const GAME = (function(){
 
 const PLAYER = (function(){
     
+    function generatePlayer(avatar){
+
+    }
 })();
 
 const WEBMANAGER = (function(){
     document.addEventListener("DOMContentLoaded", listeners);
 
     function listeners(){
-        const sections = document.querySelectorAll('body > section');
-        sections.forEach(section=>{
+
+        // For sections when animation ends adds class hidden
+        document.querySelectorAll('body > section').forEach(section=>{
             section.addEventListener('animationend', (event) => {
                 // Apply the final style after the animation completes
                 if(event.target == section){
@@ -227,15 +231,133 @@ const WEBMANAGER = (function(){
             });
         })
 
-        const btnContainerGame = document.querySelector(".game .btn-container");
-        btnContainerGame.addEventListener("click", resetAnim);
+        // Add listener to start in menu
+        document.querySelector(".menu .sub button").addEventListener("click", startAnimMenuToGame);
 
-        const start = document.querySelector(".menu .sub button");
+        // Add listener to back in game
+        document.querySelector(".game .btn-container").addEventListener("click", resetAnimGameToMenu);
         
-        start.addEventListener("click", startAnim);
+        // Add controls to buttons in menu
+        addControlsToMenu();
+    }
+
+    function addControlsToMenu(){
+        const p1 = document.querySelector(".menu .main .p1");
+        const p2 = document.querySelector(".menu .main .p2");
+
+        const addAvatarControl = (function(){
+            const avatarArr = [
+                {name: "M. Bison", img: "a1"}, 
+                {name: "Poison", img: "a2"},
+                {name: "Dhalsim", img: "a3"},
+                {name: "Chun-Li", img: "a4"},
+                {name: "Ryu", img: "a5"},
+                {name: "Zangief", img: "a6"},
+                {name: "Blanka", img: "a7"},
+                {name: "Guile", img: "a8"},
+                {name: "Sakura", img: "a9"},
+                {name: "Karin", img: "a10"},
+            ]
+
+            const typeArr = [
+                "player",
+                "bot [baby]",
+                "bot [crazy]",
+            ]
+            
+            const path = "./assets/imgs/avatar/";
+            let p1CounterAvatar = 0;
+            let p2CounterAvatar = 0;
+
+            let p1CounterType = 0;
+            let p2CounterType = 0;
+
+            // prev and next control for avatar player 1
+            p1.querySelector(".avatar .prev").addEventListener("click", ()=>{
+
+                if(p1CounterAvatar == 0) p1CounterAvatar = 9;
+                else p1CounterAvatar--;
+
+                let selected = avatarArr[p1CounterAvatar];
+
+                p1.querySelector("img").setAttribute("src", `${path + selected.img}.gif`);
+                p1.querySelector("#name").value = selected.name;
+                p1.querySelector("#avatarInput").value = p1CounterAvatar;
+            })
+            p1.querySelector(".avatar .next").addEventListener("click", ()=>{
+
+                if(p1CounterAvatar == 9) p1CounterAvatar = 0;
+                else p1CounterAvatar++;
+
+                let selected = avatarArr[p1CounterAvatar];
+
+                p1.querySelector("img").setAttribute("src", `${path + selected.img}.gif`);
+                p1.querySelector("#name").value = selected.name;
+                p1.querySelector("#avatarInput").value = p1CounterAvatar;
+            })
+
+            // prev and next control for avatar player 2
+            p2.querySelector(".avatar .prev").addEventListener("click", ()=>{
+                if(p2CounterAvatar == 0) p2CounterAvatar = 9;
+                else p2CounterAvatar--;
+
+                let selected = avatarArr[p2CounterAvatar];
+
+                p2.querySelector("img").setAttribute("src", `${path + selected.img}.gif`);
+                p2.querySelector("#name").value = selected.name;
+                p2.querySelector("#avatarInput").value = p2CounterAvatar;
+            })
+            p2.querySelector(".avatar .next").addEventListener("click", ()=>{
+
+                if(p2CounterAvatar == 9) p2CounterAvatar = 0;
+                else p2CounterAvatar++;
+
+                let selected = avatarArr[p2CounterAvatar];
+
+                p2.querySelector("img").setAttribute("src", `${path + selected.img}.gif`);
+                p2.querySelector("#name").value = selected.name;
+                p2.querySelector("#avatarInput").value = p2CounterAvatar;
+            })
+
+            // prev and next control for type player 1
+            p1.querySelector(".type .prev").addEventListener("click", ()=>{
+                if(p1CounterType == 0) p1CounterType = 2;
+                else p1CounterType--;
+
+                let selected = typeArr[p1CounterType];
+
+                p1.querySelector("#type").value = selected;
+            })
+            p1.querySelector(".type .next").addEventListener("click", ()=>{
+                if(p1CounterType == 2) p1CounterType = 0;
+                else p1CounterType++;
+
+                let selected = typeArr[p1CounterType];
+
+                p1.querySelector("#type").value = selected;
+            })
+
+            // prev and next control for type player 1
+            p2.querySelector(".type .prev").addEventListener("click", ()=>{
+                if(p2CounterType == 0) p2CounterType = 2;
+                else p2CounterType--;
+
+                let selected = typeArr[p2CounterType];
+
+                p2.querySelector("#type").value = selected;
+            })
+            p2.querySelector(".type .next").addEventListener("click", ()=>{
+                if(p2CounterType == 2) p2CounterType = 0;
+                else p2CounterType++;
+
+                let selected = typeArr[p2CounterType];
+
+                p2.querySelector("#type").value = selected;
+            })
+        })();
     }
     
-    function startAnim(){
+    function startAnimMenuToGame(){
         const menu = document.querySelector(".menu");
         const intro = document.querySelector(".intro");
         
@@ -327,7 +449,7 @@ const WEBMANAGER = (function(){
         },500)
     }
 
-    function resetAnim(){
+    function resetAnimGameToMenu(){
         const start = document.querySelector(".menu .sub button");
         const menu = document.querySelector(".menu");
         const intro = document.querySelector(".intro");

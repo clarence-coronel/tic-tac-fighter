@@ -88,7 +88,10 @@ section.menu div.card > div {
   gap: max(2vw, 20px);
 }
 section.menu div.card .name input {
-  font-size: 5rem;
+  font-size: 3rem;
+}
+section.menu div.card .avatar input {
+  display: none;
 }
 section.menu input:focus {
   outline: none;
@@ -127,6 +130,7 @@ section.menu div.card input {
 }
 section.menu div.card img {
   width: 150px;
+  height: 200px;
   position: relative;
 }
 @keyframes floatAnimation {
@@ -392,6 +396,8 @@ footer {
   align-items: center;
   gap: max(0.5vw, 5px);
   margin-top: auto;
+  font-family: "Inter", sans-serif;
+  overflow: hidden;
 }
 footer svg {
   transition-duration: 500ms;
