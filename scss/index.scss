@@ -103,8 +103,67 @@ section.menu{
         gap: max(2vw, 20px);
     }
 
+    div.card .stat{
+        display: flex;
+        flex-flow: row nowrap;
+        gap: max(1vw, 10px);
+        font-family: "Inter", sans-serif;
+        align-items: flex-start;
+
+        .label{
+            width: 30%;
+            font-family: inherit;
+            font-weight: 700;
+        }
+
+        .skill-container{
+            width: 70%;
+            font-family: inherit;
+
+            display: flex;
+            flex-flow: column;
+        }
+
+        .skill-name{
+            font-family: inherit;
+            color: $positive-clr;
+            // font-weight: 400;
+        }
+
+        .skill-desc{
+            font-family: inherit;
+        }
+    
+
+        // .inner-bar{
+        //     width: 40%;
+        //     height: 100%;
+        //     // background-color: rgb(72, 139, 228);
+        //     background-color: $positive-clr;
+        //     transition-duration: 100ms;
+        // }
+
+        .bar{
+            display: flex;
+            flex-flow: row nowrap;
+            width: 70%;
+            height: 20px;
+            gap: max(0.5vw, 5px);
+
+            .inner-bar{
+                height: 20px;
+                width: 20%;
+                // border-radius: 5px;
+                background-color: rgb(235, 233, 233);
+            }
+            .active{
+                background-color: rgb(50, 177, 60);
+            }
+        }
+    }
+
     div.card .name input{
-        font-size: 3rem;
+        font-size: 2rem;
     }
 
     div.card .avatar input{
@@ -158,8 +217,6 @@ section.menu{
     div.card img{
         width: 150px;
         height: 200px;
-        // filter: grayscale(100%);
-        position: relative;
         user-select: none;
     }
 
@@ -245,7 +302,7 @@ section.game{
         .outer{
             width: 100%;
             height: 20px;
-            background-color: gray;
+            background-color: $bar-bg;
 
             // border-radius: 5px;
             overflow: hidden;
@@ -553,8 +610,8 @@ footer{
             font-size: 2rem;
         }
 
-        div.main div.card .name input{
-            font-size: 2rem;
+        div.main div.card input{
+            font-size: 1.5rem;
         }
 
         div.main div.vs{
@@ -563,6 +620,20 @@ footer{
 
         div.sub button{
             font-size: 3rem;
+        }
+
+        div.card{
+            gap: max(1vh, 8px);
+            max-width: 280px;
+        }
+
+        div.card .stat .inner-bar{
+            background-color: red;
+        }
+
+        div.card img{
+            width: 100px;
+            height: 150px;
         }
     }
 
@@ -593,6 +664,10 @@ footer{
                 font-size: 3rem;
             }
         }
+    }
+
+    footer{
+        flex-flow: column;
     }
     
 }

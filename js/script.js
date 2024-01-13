@@ -211,17 +211,100 @@ const GAME = (function(){
 
 const PLAYER = (function(){
 
+    // HP => 1000
+    // DMG => 100
+    // Crit => 100%
     const avatarArr = [
-        {name: "M. Bison", img: "a1"}, 
-        {name: "Poison", img: "a2"},
-        {name: "Dhalsim", img: "a3"},
-        {name: "Chun-Li", img: "a4"},
-        {name: "Ryu", img: "a5"},
-        {name: "Zangief", img: "a6"},
-        {name: "Blanka", img: "a7"},
-        {name: "Guile", img: "a8"},
-        {name: "Sakura", img: "a9"},
-        {name: "Karin", img: "a10"},
+        {
+            name: "M. Bison", 
+            img: "a1",
+            hp: 700,
+            dmg: 80,
+            crit: 0.3,
+            skill: "Heavy Hitter",
+            skillDesc: "Each attack deals an additional 10% damage.",
+        }, 
+        {
+            name: "Poison", 
+            img: "a2",
+            hp: 500, 
+            dmg: 60,
+            crit: 0.4,
+            skill: "Poison Armor",
+            skillDesc: "Receiving damage inflicts poison to the attacker dealing 50 damage.",
+        },
+        {
+            name: "Dhalsim", 
+            img: "a3",
+            hp: 400, 
+            dmg: 70,
+            crit: 0.5,
+            skill: "Elusive Evasion",
+            skillDesc: "40% chance of dodging enemy attack.",
+        },
+        {
+            name: "Chun-Li", 
+            img: "a4",
+            hp: 500, 
+            dmg: 70,
+            crit: 0.4,
+            skill: "Double Strike",
+            skillDesc: "Attack twice but deals only 40% damage on the second attack.",
+        },
+        {
+            name: "Ryu", 
+            img: "a5",
+            hp: 500, 
+            dmg: 80,
+            crit: 0.4,
+            skill: "Hadouken",
+            skillDesc: "5% chance of dealing instant death to the enemy.",
+        },
+        {
+            name: "Zangief", 
+            img: "a6",
+            hp: 900, 
+            dmg: 30,
+            crit: 0.3,
+            skill: "Muscle Shield",
+            skillDesc: "Reduce damage taken by 20%",
+        },
+        {
+            name: "Blanka", 
+            img: "a7",
+            hp: 300, 
+            dmg: 100,
+            crit: 0.5,
+            skill: "Life Steal",
+            skillDesc: "Heal 60% of damage dealt.",
+        },
+        {
+            name: "Guile", 
+            img: "a8",
+            hp: 600, 
+            dmg: 60,
+            crit: 0.5,
+            skill: "Debilitating Strike",
+            skillDesc: "Attack weakens the enemy's damage stat by 5%",
+        },
+        {
+            name: "Sakura", 
+            img: "a9",
+            hp: 500, 
+            dmg: 70,
+            crit: 0.3,
+            skill: "Lethal Desperation",
+            skillDesc: "Increase critical chance based on missing health.",
+        },
+        {
+            name: "Karin", 
+            img: "a10",
+            hp: 700, 
+            dmg: 40,
+            crit: 0.5,
+            skill: "Healing Mirage",
+            skillDesc: "10% chance to recover all missing health.",
+        },
     ]
 
     const typeArr = [
@@ -239,7 +322,12 @@ const PLAYER = (function(){
         return {
             character: avatar.name,
             gif: avatar.img,
+            hp: avatar.hp,
+            dmg: avatar.dmg,
+            crit: avatar.crit,
+            skill: avatar.skill,
             difficulty: null,
+            originIndex: index,
         }
     }
 
@@ -337,6 +425,36 @@ const WEBMANAGER = (function(){
                 p1.querySelector("img").setAttribute("src", `${path + selected.img}.gif`);
                 p1.querySelector("#name").value = selected.name;
                 p1.querySelector("#avatarInput").value = p1CounterAvatar;
+                p1.querySelectorAll(".inner-bar").forEach(bar=>{
+                    if(bar.classList.contains("active")) bar.classList.remove("active");
+                })
+
+                let barActive = countBar("health", selected.hp);
+
+                p1.querySelectorAll(".health .inner-bar").forEach((bar, index)=>{
+                    if(index<barActive){
+                        bar.classList.add("active");
+                    }
+                })
+
+                barActive = countBar("damage", selected.dmg);
+
+                p1.querySelectorAll(".damage .inner-bar").forEach((bar, index)=>{
+                    if(index<barActive){
+                        bar.classList.add("active");
+                    }
+                })
+
+                barActive = countBar("critChance", selected.crit);
+
+                p1.querySelectorAll(".crit .inner-bar").forEach((bar, index)=>{
+                    if(index<barActive){
+                        bar.classList.add("active");
+                    }
+                })
+
+                p1.querySelector(".skill .skill-name").innerText = selected.skill;
+                p1.querySelector(".skill .skill-desc").innerText = selected.skillDesc;
             })
             p1.querySelector(".avatar .next").addEventListener("click", ()=>{
 
@@ -348,10 +466,41 @@ const WEBMANAGER = (function(){
                 p1.querySelector("img").setAttribute("src", `${path + selected.img}.gif`);
                 p1.querySelector("#name").value = selected.name;
                 p1.querySelector("#avatarInput").value = p1CounterAvatar;
+                p1.querySelectorAll(".inner-bar").forEach(bar=>{
+                    if(bar.classList.contains("active")) bar.classList.remove("active");
+                })
+
+                let barActive = countBar("health", selected.hp);
+
+                p1.querySelectorAll(".health .inner-bar").forEach((bar, index)=>{
+                    if(index<barActive){
+                        bar.classList.add("active");
+                    }
+                })
+
+                barActive = countBar("damage", selected.dmg);
+
+                p1.querySelectorAll(".damage .inner-bar").forEach((bar, index)=>{
+                    if(index<barActive){
+                        bar.classList.add("active");
+                    }
+                })
+
+                barActive = countBar("critChance", selected.crit);
+
+                p1.querySelectorAll(".crit .inner-bar").forEach((bar, index)=>{
+                    if(index<barActive){
+                        bar.classList.add("active");
+                    }
+                })
+
+                p1.querySelector(".skill .skill-name").innerText = selected.skill;
+                p1.querySelector(".skill .skill-desc").innerText = selected.skillDesc;
             })
 
             // prev and next control for avatar player 2
             p2.querySelector(".avatar .prev").addEventListener("click", ()=>{
+
                 if(p2CounterAvatar == 0) p2CounterAvatar = 9;
                 else p2CounterAvatar--;
 
@@ -359,7 +508,37 @@ const WEBMANAGER = (function(){
 
                 p2.querySelector("img").setAttribute("src", `${path + selected.img}.gif`);
                 p2.querySelector("#name").value = selected.name;
-                p2.querySelector("#avatarInput").value = p2CounterAvatar;
+                p2.querySelector("#avatarInput").value = p1CounterAvatar;
+                p2.querySelectorAll(".inner-bar").forEach(bar=>{
+                    if(bar.classList.contains("active")) bar.classList.remove("active");
+                })
+
+                let barActive = countBar("health", selected.hp);
+
+                p2.querySelectorAll(".health .inner-bar").forEach((bar, index)=>{
+                    if(index<barActive){
+                        bar.classList.add("active");
+                    }
+                })
+
+                barActive = countBar("damage", selected.dmg);
+
+                p2.querySelectorAll(".damage .inner-bar").forEach((bar, index)=>{
+                    if(index<barActive){
+                        bar.classList.add("active");
+                    }
+                })
+
+                barActive = countBar("critChance", selected.crit);
+
+                p2.querySelectorAll(".crit .inner-bar").forEach((bar, index)=>{
+                    if(index<barActive){
+                        bar.classList.add("active");
+                    }
+                })
+
+                p2.querySelector(".skill .skill-name").innerText = selected.skill;
+                p2.querySelector(".skill .skill-desc").innerText = selected.skillDesc;
             })
             p2.querySelector(".avatar .next").addEventListener("click", ()=>{
 
@@ -370,7 +549,37 @@ const WEBMANAGER = (function(){
 
                 p2.querySelector("img").setAttribute("src", `${path + selected.img}.gif`);
                 p2.querySelector("#name").value = selected.name;
-                p2.querySelector("#avatarInput").value = p2CounterAvatar;
+                p2.querySelector("#avatarInput").value = p1CounterAvatar;
+                p2.querySelectorAll(".inner-bar").forEach(bar=>{
+                    if(bar.classList.contains("active")) bar.classList.remove("active");
+                })
+
+                let barActive = countBar("health", selected.hp);
+
+                p2.querySelectorAll(".health .inner-bar").forEach((bar, index)=>{
+                    if(index<barActive){
+                        bar.classList.add("active");
+                    }
+                })
+
+                barActive = countBar("damage", selected.dmg);
+
+                p2.querySelectorAll(".damage .inner-bar").forEach((bar, index)=>{
+                    if(index<barActive){
+                        bar.classList.add("active");
+                    }
+                })
+
+                barActive = countBar("critChance", selected.crit);
+
+                p2.querySelectorAll(".crit .inner-bar").forEach((bar, index)=>{
+                    if(index<barActive){
+                        bar.classList.add("active");
+                    }
+                })
+
+                p2.querySelector(".skill .skill-name").innerText = selected.skill;
+                p2.querySelector(".skill .skill-desc").innerText = selected.skillDesc;
             })
 
             // prev and next control for type player 1
@@ -409,6 +618,33 @@ const WEBMANAGER = (function(){
                 p2.querySelector("#type").value = selected;
             })
         })();
+    }
+    function countBar(bartype, value){
+        let activeBar = 0;
+
+        if(bartype == "health"){
+            if(value <= 200) activeBar = 1;
+            if(value > 200 && value <= 400) activeBar = 2;
+            if(value > 400 && value <= 600) activeBar = 3;
+            if(value > 600 && value <= 800) activeBar = 4;
+            if(value > 800 && value <= 1000) activeBar = 5;
+        }
+        else if(bartype == "damage"){
+            if(value <= 20) activeBar = 1;
+            if(value > 20 && value <= 40) activeBar = 2;
+            if(value > 40 && value <= 60) activeBar = 3;
+            if(value > 60 && value <= 80) activeBar = 4;
+            if(value > 80 && value <= 100) activeBar = 5;
+        }
+        else if(bartype == "critChance"){
+            if(value <= 0.2) activeBar = 1;
+            if(value > 0.2 && value <= 0.4) activeBar = 2;
+            if(value > 0.4 && value <= 0.6) activeBar = 3;
+            if(value > 0.6 && value <= 0.8) activeBar = 4;
+            if(value > 0.8 && value <= 1) activeBar = 5;
+        }
+
+        return activeBar;
     }
     
     function startAnimMenuToGame(){
