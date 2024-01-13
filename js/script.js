@@ -253,6 +253,15 @@ const WEBMANAGER = (function(){
         const innerHealth = document.querySelectorAll(".inner");
         const gameboard = document.querySelector(".gameboard");
 
+
+        // Remove animation from starting page in menu
+        const h1Menu = document.querySelector(".menu h1");
+        const main = document.querySelector(".menu .main");
+        const sub = document.querySelector(".menu .sub");
+        h1Menu.classList.remove("appear");
+        main.classList.add("appear");
+        sub.classList.add("appear");
+        
         const anim = setInterval(()=>{
             counter++;
             if(counter == 1) intro.classList.remove("hidden");
