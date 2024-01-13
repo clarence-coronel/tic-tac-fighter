@@ -629,6 +629,7 @@ const WEBMANAGER = (function(){
             })
         })();
     }
+    
     function countBar(bartype, value){
         let activeBar = 0;
 
@@ -674,7 +675,8 @@ const WEBMANAGER = (function(){
         const p2Game = document.querySelector(".game .p2");
         const innerHealth = document.querySelectorAll(".inner");
         const gameboard = document.querySelector(".gameboard");
-
+        const announcer = document.querySelector(".game .announcer");
+        
 
         // Remove animation from starting page in menu
         const h1Menu = document.querySelector(".menu h1");
@@ -685,6 +687,11 @@ const WEBMANAGER = (function(){
         sub.classList.remove("appear");
 
         grabCharInfo();
+
+        p1Game.querySelector(".name").innerText = PLAYER.getPlayer1().character;
+        p2Game.querySelector(".name").innerText = PLAYER.getPlayer2().character;
+        p1Game.querySelector("img").setAttribute("src", `./assets/imgs/avatar/${PLAYER.getPlayer1().gif}.gif`);
+        p2Game.querySelector("img").setAttribute("src", `./assets/imgs/avatar/${PLAYER.getPlayer2().gif}.gif`);
         
         const anim = setInterval(()=>{
             counter++;
@@ -740,12 +747,15 @@ const WEBMANAGER = (function(){
                 game.classList.remove("hidden");
                 p1Game.classList.add("appear-l-to-r");
                 p2Game.classList.add("appear-r-to-l");
+                announcer.classList.add("fadeIn");
             }
             else if(counter == 16){
                 innerHealth.forEach(health=>{
                     health.classList.add("load-health");
                 })
-                GAME.startGame();
+                
+                // Only startGame after every animation is finished, display "Loading" sa announcer tas page game na labas na yung countdown
+                // GAME.startGame();
 
                 removeInterval(anim);
             }
@@ -794,6 +804,7 @@ const WEBMANAGER = (function(){
         const vs = document.querySelector(".intro .vs");
         const cd = document.querySelector(".intro .countdown");
         const game = document.querySelector(".game");
+        const announcer = document.querySelector(".game .announcer");
 
         const p1Game = document.querySelector(".game .p1");
         const p2Game = document.querySelector(".game .p2");
@@ -816,7 +827,7 @@ const WEBMANAGER = (function(){
             if(counter == 2){
                 menu.classList.remove("hidden");
                 menu.classList.remove("fadeOut");
-
+                announcer.classList.remove("fadeIn");
                 h1Menu.classList.add("appear");
                 main.classList.add("appear");
                 sub.classList.add("appear");
