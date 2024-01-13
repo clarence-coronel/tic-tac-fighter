@@ -348,6 +348,14 @@ const PLAYER = (function(){
         player2 = obj;
     }
 
+    function getPlayer1(){
+        return player1;
+    }
+    
+    function getPlayer2(){
+        return player2;
+    }
+
     function viewPlayers(){
         console.table(player1);
         console.table(player2);
@@ -366,6 +374,8 @@ const PLAYER = (function(){
         setPlayer2,
         getAvatarArr,
         getTypeArr,
+        getPlayer1,
+        getPlayer2,
         generatePlayer,
         generateBot,
         viewPlayers,
@@ -508,7 +518,7 @@ const WEBMANAGER = (function(){
 
                 p2.querySelector("img").setAttribute("src", `${path + selected.img}.gif`);
                 p2.querySelector("#name").value = selected.name;
-                p2.querySelector("#avatarInput").value = p1CounterAvatar;
+                p2.querySelector("#avatarInput").value = p2CounterAvatar;
                 p2.querySelectorAll(".inner-bar").forEach(bar=>{
                     if(bar.classList.contains("active")) bar.classList.remove("active");
                 })
@@ -549,7 +559,7 @@ const WEBMANAGER = (function(){
 
                 p2.querySelector("img").setAttribute("src", `${path + selected.img}.gif`);
                 p2.querySelector("#name").value = selected.name;
-                p2.querySelector("#avatarInput").value = p1CounterAvatar;
+                p2.querySelector("#avatarInput").value = p2CounterAvatar;
                 p2.querySelectorAll(".inner-bar").forEach(bar=>{
                     if(bar.classList.contains("active")) bar.classList.remove("active");
                 })
@@ -673,6 +683,8 @@ const WEBMANAGER = (function(){
         h1Menu.classList.remove("appear");
         main.classList.remove("appear");
         sub.classList.remove("appear");
+
+        grabCharInfo();
         
         const anim = setInterval(()=>{
             counter++;
@@ -734,35 +746,42 @@ const WEBMANAGER = (function(){
                     health.classList.add("load-health");
                 })
                 GAME.startGame();
-                
-                const p1AvatarIndex = document.querySelector(".menu .p1 #avatarInput").value;
-                const p2AvatarIndex = document.querySelector(".menu .p2 #avatarInput").value;
-
-                if(document.querySelector(".menu .p1 #type").value == PLAYER.getTypeArr()[0]){
-                    PLAYER.setPlayer1(PLAYER.generatePlayer(p1AvatarIndex));
-                }
-                else if(document.querySelector(".menu .p1 #type").value == PLAYER.getTypeArr()[1]){
-                    PLAYER.setPlayer1(PLAYER.generateBot(p1AvatarIndex, PLAYER.getTypeArr()[1]));
-                }
-                else if(document.querySelector(".menu .p1 #type").value == PLAYER.getTypeArr()[2]){
-                    PLAYER.setPlayer1(PLAYER.generateBot(p1AvatarIndex, PLAYER.getTypeArr()[2]));
-                }
-
-                if(document.querySelector(".menu .p2 #type").value == PLAYER.getTypeArr()[0]){
-                    PLAYER.setPlayer2(PLAYER.generatePlayer(p2AvatarIndex));
-                }
-                else if(document.querySelector(".menu .p2 #type").value == PLAYER.getTypeArr()[1]){
-                    PLAYER.setPlayer2(PLAYER.generateBot(p2AvatarIndex, PLAYER.getTypeArr()[1]));
-                }
-                else if(document.querySelector(".menu .p2 #type").value == PLAYER.getTypeArr()[2]){
-                    PLAYER.setPlayer2(PLAYER.generateBot(p2AvatarIndex, PLAYER.getTypeArr()[2]));
-                }
-
-                PLAYER.viewPlayers();
 
                 removeInterval(anim);
             }
         },500)
+    }
+
+    function grabCharInfo(){
+        const p1AvatarIndex = document.querySelector(".menu .p1 #avatarInput").value;
+        const p2AvatarIndex = document.querySelector(".menu .p2 #avatarInput").value;
+
+        console.log("p1 " + p1AvatarIndex);
+        console.log("p2 " + p2AvatarIndex);
+
+        if(document.querySelector(".menu .p1 #type").value == PLAYER.getTypeArr()[0]){
+            PLAYER.setPlayer1(PLAYER.generatePlayer(p1AvatarIndex));
+        }
+        else if(document.querySelector(".menu .p1 #type").value == PLAYER.getTypeArr()[1]){
+            PLAYER.setPlayer1(PLAYER.generateBot(p1AvatarIndex, PLAYER.getTypeArr()[1]));
+        }
+        else if(document.querySelector(".menu .p1 #type").value == PLAYER.getTypeArr()[2]){
+            PLAYER.setPlayer1(PLAYER.generateBot(p1AvatarIndex, PLAYER.getTypeArr()[2]));
+        }
+
+        if(document.querySelector(".menu .p2 #type").value == PLAYER.getTypeArr()[0]){
+            PLAYER.setPlayer2(PLAYER.generatePlayer(p2AvatarIndex));
+        }
+        else if(document.querySelector(".menu .p2 #type").value == PLAYER.getTypeArr()[1]){
+            PLAYER.setPlayer2(PLAYER.generateBot(p2AvatarIndex, PLAYER.getTypeArr()[1]));
+        }
+        else if(document.querySelector(".menu .p2 #type").value == PLAYER.getTypeArr()[2]){
+            PLAYER.setPlayer2(PLAYER.generateBot(p2AvatarIndex, PLAYER.getTypeArr()[2]));
+        }
+
+        PLAYER.viewPlayers();
+        document.querySelector(".intro .p1").innerText = PLAYER.getPlayer1().character;
+        document.querySelector(".intro .p2").innerText = PLAYER.getPlayer2().character;
     }
 
     function resetAnimGameToMenu(){

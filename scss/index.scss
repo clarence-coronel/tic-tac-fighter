@@ -73,6 +73,7 @@ section.menu{
         transition-duration: 200ms;
         font-size: 3rem;
         margin-bottom: 2vh;
+        user-select: none;
     }
 
     div.sub > button:hover{
@@ -195,7 +196,8 @@ section.menu{
         background-color: transparent;
         border: none;
         font-size: 2rem;
-
+        user-select: none;
+        
         display: flex;
         justify-content: center;
         align-items: center;
