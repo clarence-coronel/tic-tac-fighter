@@ -259,8 +259,8 @@ const WEBMANAGER = (function(){
         const main = document.querySelector(".menu .main");
         const sub = document.querySelector(".menu .sub");
         h1Menu.classList.remove("appear");
-        main.classList.add("appear");
-        sub.classList.add("appear");
+        main.classList.remove("appear");
+        sub.classList.remove("appear");
         
         const anim = setInterval(()=>{
             counter++;
