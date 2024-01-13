@@ -7,15 +7,38 @@ const GAMEBOARD = (function(){
 
     function resetGameboard(){
         const cellContents = document.querySelectorAll(".cell span");
+        const cells = document.querySelectorAll(".cell");
 
         gameboardArr.forEach((cell, index)=>{
             gameboardArr[index] = "";
         })
 
-        cellContents.forEach(cellContent=>{
-            cellContent.innerText = "";
+        // cellContents.forEach(cellContent=>{
+        //     cellContent.classList.add("scaleIn");
+
+        //     setTimeout(()=>{
+        //         cellContent.innerText = "";
+        //         cellContent.classList.remove("scaleIn");
+        //     }, 500)
+        // })
+
+        cells.forEach(cell =>{
+            if(cell.classList.contains("winning-cell")){
+                cell.classList.remove("winning-cell");
+            }
         })
 
+        // setTimeout(()=>{
+        //     cellContents.forEach(cellContent =>{
+        //         cellContent.innerText = "";
+        //         cellContent.classList.remove("marker-fadeOut");
+        //     })
+        // }, 500)
+
+        cellContents.forEach(cellContent =>{
+            cellContent.innerText = "";
+        })
+        
     }
 
     function getGameboardArr(){
@@ -35,40 +58,89 @@ const GAMEBOARD = (function(){
         cells.forEach((cell)=>{
 
             cell.addEventListener("click", ()=>{ 
+
                 let index = cell.dataset.index;
 
-                const markerA = "X";
-                const markerB = "O";
-
                 const cellContent = cell.querySelector("span");
-
                 if(GAME.getGameInProgress() && cellContent.innerText == "" && gameboardArr[index] == ""){
-                    if(GAME.getCurrentTurn() == "playerA"){
-                        cellContent.innerText = markerA;
-                        gameboardArr[index] = markerA;
+                    if(GAME.getCurrentTurn() == PLAYER.getPlayer1() && PLAYER.getPlayer1().difficulty == null){
+                        cellContent.innerText = PLAYER.getPlayer1().marker;
+                        gameboardArr[index] = PLAYER.getPlayer1().marker;
                     }
-                    else{
-                        cellContent.innerText = markerB;
-                        gameboardArr[index] = markerB;
+                    else if(GAME.getCurrentTurn() == PLAYER.getPlayer2() && PLAYER.getPlayer2().difficulty == null){
+                        cellContent.innerText = PLAYER.getPlayer2().marker;
+                        gameboardArr[index] = PLAYER.getPlayer2().marker;
+                    }
+                    else if(GAME.getCurrentTurn() == PLAYER.getPlayer1() && PLAYER.getPlayer1().difficulty == "baby"){
+                        alert("p1 baby code here")
+                    }
+                    else if(GAME.getCurrentTurn() == PLAYER.getPlayer1() && PLAYER.getPlayer1().difficulty == "crazy"){
+                        alert("p1 crazy code here")
+                    }
+                    else if(GAME.getCurrentTurn() == PLAYER.getPlayer2() && PLAYER.getPlayer2().difficulty == "baby"){
+                        alert("p2 baby code here")
+                    }
+                    else if(GAME.getCurrentTurn() == PLAYER.getPlayer2() && PLAYER.getPlayer2().difficulty == "crazy"){
+                        alert("p2 crazy code here")
                     }
 
                     markerPlacedAnimation(cellContent);
                     GAME.nextMove(); 
 
-                    const checkWinnerObj = GAME.detectGameWinner();
+                    const checkWinnerObj = GAME.detectRoundWinner();
+
                     if(checkWinnerObj.winner != null){
-                        GAME.endGame(checkWinnerObj.winner);
-                        markWinningCells(checkWinnerObj.winningCells);
-                    }else{
-                        if(GAME.isGameboardFull()){
-                            GAME.endGame("Draw");
-                        }  
-                    } 
+                        // Winner State
+                        if(checkWinnerObj.winner == PLAYER.getPlayer1()){
+                            // roundWinner(checkWinnerObj.winner)
+                            // markWinningCells(checkWinnerObj.winningCells);
+
+                            PLAYER.prepAttack(PLAYER.getPlayer1(), PLAYER.getPlayer2());
+                            GAME.updateUIAttacked();
+                        }
+                        else if (checkWinnerObj.winner == PLAYER.getPlayer2()){
+
+                            PLAYER.prepAttack(PLAYER.getPlayer2(), PLAYER.getPlayer1());
+                            GAME.updateUIAttacked();
+                        }
+                        // Draw State
+                        else if(checkWinnerObj.winner == "draw"){
+                            // Inflict damage to both
+                        } 
+
+                        let gameWinner = GAME.detectGameWinner();
+
+                        if(gameWinner == PLAYER.getPlayer1()){
+                            prompt("Show Modal: Player 1 Won! Play again?")
+                        }
+                        else if(gameWinner == PLAYER.getPlayer2()){
+                            prompt("Show Modal: Player 2 Won! Play again?")
+                        }
+                        else if(gameWinner == PLAYER.getPlayer2()){
+                            prompt("Show Modal: Draw! Play again?")
+                        }
+                        else if (gameWinner == null){
+                            GAME.toggleGameInProgress();
+                            
+                            // GAWIN YUNG ANIMATION DINE PATI YUNG SA ANNOUNCER
+
+                            setTimeout(()=>{
+                                GAME.toggleGameInProgress();
+                                GAMEBOARD.resetGameboard();
+                            }, 3000)
+                            
+                        }
+                    }
+                    else{
+
+                    }
+                    
                 }
-                
+              
             })
             
         })
+    
     }
 
     function markerPlacedAnimation(cellContent){
@@ -79,13 +151,14 @@ const GAMEBOARD = (function(){
         }, 200);
     }
 
-    return {getGameboardArr, resetGameboard, addListenerToCell};
+    return {getGameboardArr, resetGameboard, addListenerToCell, markWinningCells};
 })();
 
 const GAME = (function(){
     // Used to determine who's turn it is
     // playerA / playerB
-    let currentTurn = "playerA";
+
+    let currentTurn = null;
 
     let gameInProgress = false;
 
@@ -93,31 +166,52 @@ const GAME = (function(){
         return currentTurn;
     }
 
+    function toggleGameInProgress(){
+        gameInProgress = gameInProgress ? false : true;
+    }
+
     function getGameInProgress(){
         return gameInProgress;
     }
 
     function startGame(){
-        gameInProgress = true;
-        currentTurn = "playerA";
+        toggleGameInProgress();
+        currentTurn = PLAYER.getPlayer1();
         winner = null;
         GAMEBOARD.resetGameboard();
 
         GAMEBOARD.addListenerToCell();
+        PLAYER.addMarker();
     }
 
     function endGame(winner){
-        gameInProgress = false;
-
         console.log(winner);
     }
 
+    function roundWinner(winner){
+        
+        if(winner == PLAYER.getPlayer1()){
+            PLAYER.prepAttack(PLAYER.getPlayer1(), PLAYER.getPlayer2());
+            GAME.updateUIAttacked();
+        }
+        else if(winner == PLAYER.getPlayer2()){
+            PLAYER.prepAttack(PLAYER.getPlayer2(), PLAYER.getPlayer2());
+            GAME.updateUIAttacked();
+        }
+        
+    }
+
+    function updateUIAttacked(){
+        console.log("Player 1 HP: " + PLAYER.getPlayer1().hp);
+        console.log("Player 2 HP: " + PLAYER.getPlayer2().hp);
+    }
+
     // Returns an object with winner result and cells that won the game
-    function detectGameWinner(){
+    function detectRoundWinner(){
         let winner = null;
         let winningCells = null;
-        const markerA = "X";
-        const markerB = "O";
+        const markerA = PLAYER.getPlayer1().marker;
+        const markerB = PLAYER.getPlayer2().marker;
 
         let currentGameboard = GAMEBOARD.getGameboardArr();
 
@@ -171,20 +265,42 @@ const GAME = (function(){
         };
 
         if(checkHorizontal(markerA) || checkVertical(markerA) || checkDiagonal(markerA)){
-            winner = "playerA";
+            winner = PLAYER.getPlayer1();
         }
         else if (checkHorizontal(markerB) || checkVertical(markerB) || checkDiagonal(markerB)){
-            winner = "playerB";
+            winner = PLAYER.getPlayer2();
+        }
+        else if(GAME.isGameboardFull()){
+            winner = "draw";
         }
         else{
             winner = null;
         }
 
-        return {winner, winningCells};
+        if(winningCells != null) GAMEBOARD.markWinningCells(winningCells);
+
+        return {winner};
+    }
+
+    function detectGameWinner(){
+
+        let winner = null;
+
+        if(PLAYER.getPlayer1().hp <= 0 && PLAYER.getPlayer2().hp <= 0){
+            winner = "draw";
+        }
+        else if(PLAYER.getPlayer2().hp <= 0){
+            winner = PLAYER.getPlayer1();
+        }
+        else if(PLAYER.getPlayer1().hp <= 0){
+            winner = PLAYER.getPlayer2();
+        }
+
+        return winner;
     }
 
     function nextMove(){
-        currentTurn = currentTurn == "playerA" ? "playerB" : "playerA";
+        currentTurn = currentTurn == PLAYER.getPlayer1() ? PLAYER.getPlayer2() : PLAYER.getPlayer1();
     }
 
     function isGameboardFull(){
@@ -205,7 +321,11 @@ const GAME = (function(){
         startGame,
         endGame,
         nextMove,
+        detectRoundWinner,
+        updateUIAttacked,
+        roundWinner,
         detectGameWinner,
+        toggleGameInProgress,
     };
 })();
 
@@ -218,7 +338,7 @@ const PLAYER = (function(){
         {
             name: "M. Bison", 
             img: "a1",
-            hp: 700,
+            hp: 600,
             dmg: 80,
             crit: 0.3,
             skill: "Heavy Hitter",
@@ -227,8 +347,8 @@ const PLAYER = (function(){
         {
             name: "Poison", 
             img: "a2",
-            hp: 500, 
-            dmg: 60,
+            hp: 800, 
+            dmg: 40,
             crit: 0.4,
             skill: "Poison Armor",
             skillDesc: "Receiving damage inflicts poison to the attacker dealing 50 damage.",
@@ -246,8 +366,8 @@ const PLAYER = (function(){
             name: "Chun-Li", 
             img: "a4",
             hp: 500, 
-            dmg: 70,
-            crit: 0.4,
+            dmg: 50,
+            crit: 0.5,
             skill: "Double Strike",
             skillDesc: "Attack twice but deals only 40% damage on the second attack.",
         },
@@ -258,7 +378,7 @@ const PLAYER = (function(){
             dmg: 80,
             crit: 0.4,
             skill: "Hadouken",
-            skillDesc: "5% chance of dealing instant death to the enemy.",
+            skillDesc: "Attacking has a 5% chance of dealing instant death to the enemy.",
         },
         {
             name: "Zangief", 
@@ -285,7 +405,7 @@ const PLAYER = (function(){
             dmg: 60,
             crit: 0.5,
             skill: "Debilitating Strike",
-            skillDesc: "Attack weakens the enemy's damage stat by 5%",
+            skillDesc: "Attacking weakens the enemy's damage stat by 5%",
         },
         {
             name: "Sakura", 
@@ -294,7 +414,7 @@ const PLAYER = (function(){
             dmg: 70,
             crit: 0.3,
             skill: "Lethal Desperation",
-            skillDesc: "Increase critical chance based on missing health.",
+            skillDesc: "Attacking has increase critical chance based on missing health.",
         },
         {
             name: "Karin", 
@@ -303,7 +423,7 @@ const PLAYER = (function(){
             dmg: 40,
             crit: 0.5,
             skill: "Healing Mirage",
-            skillDesc: "10% chance to recover all missing health.",
+            skillDesc: "Attacking has a 10% chance to recover all missing health.",
         },
     ]
 
@@ -315,6 +435,34 @@ const PLAYER = (function(){
 
     let player1 = null;
     let player2 = null;
+
+    function prepAttack(attacker, defender){
+        let dmg = attacker.dmg;
+
+        if(attacker.name == "M. Bison"){
+            dmg += dmg*0.1;
+        }
+
+        if(defender.name == "Poison"){
+            attacker.hp =- 50;
+        }
+        if(defender.name == "Dhalsim"){
+            if(rollDice(0.4)){
+                dmg = 0;
+            }
+        }
+
+        // Crit
+        if(rollDice(attacker.crit)) dmg *= 2;
+
+        attack(defender, dmg);
+    }
+
+    function attack(target, damage){
+        if(target == player1) player1.hp -= damage;
+        else if(target == player2) player2.hp -= damage;
+    }
+
 
     function generatePlayer(index){
         const avatar = avatarArr[index];
@@ -329,6 +477,23 @@ const PLAYER = (function(){
             difficulty: null,
             originIndex: index,
         }
+    }
+
+    function addMarker(){
+        if(player1 == null || player2 == null) return;
+
+        player1.marker = "X";
+        player2.marker = "O";
+    }
+
+    function exchangeMarker(){
+        if(player1 == null || player2 == null) return;
+
+        let temp = null;
+
+        temp = player1.marker;
+        player1.marker = player2.marker;
+        player2.marker = temp;
     }
 
     function generateBot(index, type){
@@ -369,6 +534,15 @@ const PLAYER = (function(){
         return typeArr;
     }
 
+    function rollDice(trueChance) {
+        if (typeof trueChance !== 'number' || trueChance < 0 || trueChance > 1) {
+            return null;
+        }
+    
+        const randomValue = Math.random();
+        return randomValue <= trueChance;
+    }
+
     return {
         setPlayer1,
         setPlayer2,
@@ -379,6 +553,9 @@ const PLAYER = (function(){
         generatePlayer,
         generateBot,
         viewPlayers,
+        addMarker,
+        exchangeMarker,
+        prepAttack,
     }
 })();
 
@@ -593,22 +770,22 @@ const WEBMANAGER = (function(){
             })
 
             // prev and next control for type player 1
-            p1.querySelector(".type .prev").addEventListener("click", ()=>{
-                if(p1CounterType == 0) p1CounterType = 2;
-                else p1CounterType--;
+            // p1.querySelector(".type .prev").addEventListener("click", ()=>{
+            //     if(p1CounterType == 0) p1CounterType = 2;
+            //     else p1CounterType--;
 
-                let selected = typeArr[p1CounterType];
+            //     let selected = typeArr[p1CounterType];
 
-                p1.querySelector("#type").value = selected;
-            })
-            p1.querySelector(".type .next").addEventListener("click", ()=>{
-                if(p1CounterType == 2) p1CounterType = 0;
-                else p1CounterType++;
+            //     p1.querySelector("#type").value = selected;
+            // })
+            // p1.querySelector(".type .next").addEventListener("click", ()=>{
+            //     if(p1CounterType == 2) p1CounterType = 0;
+            //     else p1CounterType++;
 
-                let selected = typeArr[p1CounterType];
+            //     let selected = typeArr[p1CounterType];
 
-                p1.querySelector("#type").value = selected;
-            })
+            //     p1.querySelector("#type").value = selected;
+            // })
 
             // prev and next control for type player 1
             p2.querySelector(".type .prev").addEventListener("click", ()=>{
@@ -755,7 +932,7 @@ const WEBMANAGER = (function(){
                 })
                 
                 // Only startGame after every animation is finished, display "Loading" sa announcer tas page game na labas na yung countdown
-                // GAME.startGame();
+                GAME.startGame();
 
                 removeInterval(anim);
             }

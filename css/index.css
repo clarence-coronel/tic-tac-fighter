@@ -170,6 +170,9 @@ section.menu div.card > div button:hover {
   color: #e65e5e;
   scale: 1.2;
 }
+section.menu div.p1 .type button {
+  visibility: hidden;
+}
 section.menu div.card input {
   border-radius: 5px;
   border-color: rgb(33, 33, 33);
@@ -342,9 +345,21 @@ section.game div.gameboard button.cell span {
     scale: 1;
   }
 }
+@keyframes scaleIn {
+  from {
+    scale: 1;
+  }
+  to {
+    scale: 0;
+  }
+}
 section.game div.gameboard .marker-appear {
   display: block;
   animation: marker-appear 0.2s ease-in-out;
+}
+section.game div.gameboard .scaleIn {
+  display: block;
+  animation: fadeOut 0.2s ease-in-out;
 }
 section.game div.fadeIn {
   animation: fadeIn 0.5s ease-in-out;

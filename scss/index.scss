@@ -212,6 +212,10 @@ section.menu{
         scale: 1.2;
     }
 
+    div.p1 .type button{
+        visibility:hidden;
+    }
+
     div.card input{
         border-radius: 5px;
         border-color: $black;
@@ -418,10 +422,23 @@ section.game{
             }
         }
         
+        @keyframes scaleIn {
+            from {
+                scale: 1;
+            }
+            to {
+                scale: 0;
+            }
+        }
         /* Apply the animation to the text */
         .marker-appear {
             display: block;
             animation: marker-appear 0.2s ease-in-out;
+        }
+
+        .scaleIn {
+            display: block;
+            animation: fadeOut 0.2s ease-in-out;
         }
     }
 
