@@ -210,9 +210,77 @@ const GAME = (function(){
 })();
 
 const PLAYER = (function(){
-    
-    function generatePlayer(avatar){
 
+    const avatarArr = [
+        {name: "M. Bison", img: "a1"}, 
+        {name: "Poison", img: "a2"},
+        {name: "Dhalsim", img: "a3"},
+        {name: "Chun-Li", img: "a4"},
+        {name: "Ryu", img: "a5"},
+        {name: "Zangief", img: "a6"},
+        {name: "Blanka", img: "a7"},
+        {name: "Guile", img: "a8"},
+        {name: "Sakura", img: "a9"},
+        {name: "Karin", img: "a10"},
+    ]
+
+    const typeArr = [
+        "player",
+        "bot [baby]",
+        "bot [crazy]",
+    ]
+
+    let player1 = null;
+    let player2 = null;
+
+    function generatePlayer(index){
+        const avatar = avatarArr[index];
+
+        return {
+            character: avatar.name,
+            gif: avatar.img,
+            difficulty: null,
+        }
+    }
+
+    function generateBot(index, type){
+        const bot = generatePlayer(index);
+
+        const aiType = type == typeArr[1] ? "baby" : "crazy";
+        bot.difficulty = aiType;
+
+        return bot;
+    }
+
+    function setPlayer1(obj){
+        player1 = obj;
+    }
+
+    function setPlayer2(obj){
+        player2 = obj;
+    }
+
+    function viewPlayers(){
+        console.table(player1);
+        console.table(player2);
+    }
+
+    function getAvatarArr(){
+        return avatarArr;
+    }
+
+    function getTypeArr(){
+        return typeArr;
+    }
+
+    return {
+        setPlayer1,
+        setPlayer2,
+        getAvatarArr,
+        getTypeArr,
+        generatePlayer,
+        generateBot,
+        viewPlayers,
     }
 })();
 
@@ -246,24 +314,10 @@ const WEBMANAGER = (function(){
         const p2 = document.querySelector(".menu .main .p2");
 
         const addAvatarControl = (function(){
-            const avatarArr = [
-                {name: "M. Bison", img: "a1"}, 
-                {name: "Poison", img: "a2"},
-                {name: "Dhalsim", img: "a3"},
-                {name: "Chun-Li", img: "a4"},
-                {name: "Ryu", img: "a5"},
-                {name: "Zangief", img: "a6"},
-                {name: "Blanka", img: "a7"},
-                {name: "Guile", img: "a8"},
-                {name: "Sakura", img: "a9"},
-                {name: "Karin", img: "a10"},
-            ]
 
-            const typeArr = [
-                "player",
-                "bot [baby]",
-                "bot [crazy]",
-            ]
+            const avatarArr = PLAYER.getAvatarArr();
+
+            const typeArr = PLAYER.getTypeArr();
             
             const path = "./assets/imgs/avatar/";
             let p1CounterAvatar = 0;
@@ -444,6 +498,32 @@ const WEBMANAGER = (function(){
                     health.classList.add("load-health");
                 })
                 GAME.startGame();
+                
+                const p1AvatarIndex = document.querySelector(".menu .p1 #avatarInput").value;
+                const p2AvatarIndex = document.querySelector(".menu .p2 #avatarInput").value;
+
+                if(document.querySelector(".menu .p1 #type").value == PLAYER.getTypeArr()[0]){
+                    PLAYER.setPlayer1(PLAYER.generatePlayer(p1AvatarIndex));
+                }
+                else if(document.querySelector(".menu .p1 #type").value == PLAYER.getTypeArr()[1]){
+                    PLAYER.setPlayer1(PLAYER.generateBot(p1AvatarIndex, PLAYER.getTypeArr()[1]));
+                }
+                else if(document.querySelector(".menu .p1 #type").value == PLAYER.getTypeArr()[2]){
+                    PLAYER.setPlayer1(PLAYER.generateBot(p1AvatarIndex, PLAYER.getTypeArr()[2]));
+                }
+
+                if(document.querySelector(".menu .p2 #type").value == PLAYER.getTypeArr()[0]){
+                    PLAYER.setPlayer2(PLAYER.generatePlayer(p2AvatarIndex));
+                }
+                else if(document.querySelector(".menu .p2 #type").value == PLAYER.getTypeArr()[1]){
+                    PLAYER.setPlayer2(PLAYER.generateBot(p2AvatarIndex, PLAYER.getTypeArr()[1]));
+                }
+                else if(document.querySelector(".menu .p2 #type").value == PLAYER.getTypeArr()[2]){
+                    PLAYER.setPlayer2(PLAYER.generateBot(p2AvatarIndex, PLAYER.getTypeArr()[2]));
+                }
+
+                PLAYER.viewPlayers();
+
                 removeInterval(anim);
             }
         },500)

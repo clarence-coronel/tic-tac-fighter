@@ -132,6 +132,9 @@ section.menu div.card img {
   width: 150px;
   height: 200px;
   position: relative;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
 }
 @keyframes floatAnimation {
   0% {
@@ -222,6 +225,9 @@ section.game div.health-bar .p2 .outer {
 }
 section.game div.health-bar img {
   width: 100px;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
 }
 section.game div.health-bar .name {
   font-size: 2rem;

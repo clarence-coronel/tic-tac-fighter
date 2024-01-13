@@ -160,6 +160,7 @@ section.menu{
         height: 200px;
         // filter: grayscale(100%);
         position: relative;
+        user-select: none;
     }
 
     @keyframes floatAnimation {
@@ -273,6 +274,7 @@ section.game{
 
         img{
             width: 100px;
+            user-select: none;
         }
 
         .name{
