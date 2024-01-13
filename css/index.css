@@ -259,8 +259,8 @@ section.game div.health-bar .inner {
   background-color: rgb(71, 211, 71);
 }
 section.game div.health-bar .load-health {
-  width: 80%;
-  animation: loadHealth 1s ease-in-out;
+  width: 100%;
+  animation: loadHealth 0.5s ease-in-out;
 }
 section.game div.health-bar .p1 .outer {
   flex-flow: row;
