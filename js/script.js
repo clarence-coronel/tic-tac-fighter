@@ -446,7 +446,7 @@ const PLAYER = (function(){
         {
             name: "Blanka", 
             img: "a7",
-            hp: 300, 
+            hp: 200, 
             dmg: 100,
             crit: 0.5,
             skill: "Life Steal",
@@ -539,8 +539,10 @@ const PLAYER = (function(){
             uniqueMonologue += `<br>${attackerName} healed for <span class="heal">${dmg * 0.6} health</span> due to Life Steal skill. `;
         }
         if(attacker.character == "Guile"){
-            defender.dmg -= (defender.dmg * 0.05);
 
+            if(defender.dmg >= 5){
+                defender.dmg -= (defender.dmg * 0.05);
+            }
             uniqueMonologue += `<br>${defenderName} has reduced ${defender.dmg * 0.05} damage stat due to Debilitating Strike. `;
         }
         if(attacker.character == "Sakura"){
