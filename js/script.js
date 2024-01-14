@@ -543,7 +543,7 @@ const PLAYER = (function(){
             if(defender.dmg >= 5){
                 defender.dmg -= (defender.dmg * 0.05);
             }
-            uniqueMonologue += `<br>${defenderName} has reduced ${defender.dmg * 0.05} damage stat due to Debilitating Strike. `;
+            uniqueMonologue += `<br>${defenderName} has reduced ${parseFloat((defender.dmg * 0.05).toFixed(2))} damage stat due to Debilitating Strike. `;
         }
         if(attacker.character == "Sakura"){
             attacker.crit += ((attacker.hp/500) * 100) * 0.6;
