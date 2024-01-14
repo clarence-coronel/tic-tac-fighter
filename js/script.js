@@ -453,7 +453,7 @@ const PLAYER = (function(){
             img: "a7",
             hp: 200, 
             dmg: 100,
-            crit: 0.5,
+            crit: 0.2,
             skill: "Life Steal",
             skillDesc: "Heal 50% of damage dealt.",
         },
