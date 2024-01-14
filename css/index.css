@@ -5,6 +5,7 @@
   box-sizing: border-box;
   font-family: "Inter", sans-serif;
   font-family: "Permanent Marker", cursive;
+  color: rgb(43, 42, 42);
 }
 
 body {
@@ -479,6 +480,73 @@ footer svg:hover {
   transform: rotate(360deg);
 }
 
+.tint {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9;
+  background-color: rgba(41, 41, 41, 0.726);
+  display: none;
+  justify-content: center;
+  align-items: flex-start;
+  font-family: "Inter", sans-serif;
+  animation: fadeIn 0.5s ease-in-out;
+}
+@keyframes modal-appear {
+  from {
+    transform: translate(0, 10px);
+    opacity: 0;
+  }
+  to {
+    transform: translate(0, 0);
+    opacity: 1;
+  }
+}
+.tint .modal {
+  margin-top: max(20vh, 150px);
+  width: max(30vw, 300px);
+  height: max(20vh, 150px);
+  background-color: white;
+  border-radius: 10px;
+  font-family: inherit;
+  animation: modal-appear 0.5s ease-in-out;
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+  gap: max(2vh, 20px);
+}
+.tint div {
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+}
+.tint .winner {
+  font-size: 2rem;
+  font-weight: 700;
+}
+.tint .won-text {
+  color: rgb(9, 207, 52);
+  font-weight: 700;
+  font-family: "Inter", sans-serif;
+  font-size: 1rem;
+}
+.tint button {
+  background-color: transparent;
+  border: none;
+  font-size: 1.5rem;
+}
+.tint button:hover {
+  cursor: pointer;
+  color: #e65e5e;
+}
+
+.tint-fadeOut {
+  animation: fadeOut 0.5s ease-in-out;
+}
+
 @media screen and (max-width: 1200px) {
   section.menu h1 {
     font-size: 3rem;
@@ -558,5 +626,14 @@ footer svg:hover {
   }
   footer {
     flex-flow: column;
+  }
+  .tint .winner {
+    font-size: 1.5rem;
+  }
+  .tint .won-text {
+    font-size: 0.8rem;
+  }
+  .tint button {
+    font-size: 1.2rem;
   }
 }/*# sourceMappingURL=index.css.map */

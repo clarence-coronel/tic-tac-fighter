@@ -8,6 +8,7 @@
     box-sizing: border-box;
     font-family: "Inter", sans-serif;
     font-family: "Permanent Marker", cursive;
+    color: rgb(43, 42, 42);
     // font-family: "Inter", sans-serif;
     // font-family: "Press Start 2P", system-ui;
 
@@ -582,6 +583,86 @@ footer{
     }
 }
 
+.tint{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 9;
+    background-color: rgba(41, 41, 41, 0.726);
+    display: none;
+    justify-content: center;
+    align-items: flex-start;
+    font-family: "Inter", sans-serif;
+
+    animation: fadeIn 0.5s ease-in-out;
+
+    @keyframes modal-appear {
+        from{
+            transform: translate(0, 10px);
+            opacity: 0;
+        }
+
+        to{
+            transform: translate(0, 0);
+            opacity: 1;
+        }
+    }
+    .modal{
+        margin-top: max(20vh, 150px);
+        width: max(30vw, 300px);
+        height: max(20vh, 150px);
+        background-color: white;
+        border-radius: 10px;
+        font-family: inherit;
+
+        animation: modal-appear 0.5s ease-in-out;
+
+        display: flex;
+        flex-flow: column;
+        justify-content: center;
+        align-items: center;
+        gap: max(2vh, 20px);
+    }
+
+    div{
+        display: flex;
+        flex-flow: column;
+        align-items: center;
+    }
+
+    .winner{
+        // font-family: "Inter", sans-serif;
+        font-size: 2rem;
+        font-weight: 700;
+        // text-shadow: 2px 2px 2px rgba(13, 117, 36, 0.442);
+    }
+
+    .won-text{
+        color: rgb(9, 207, 52);
+        font-weight: 700;
+        font-family: "Inter", sans-serif;
+        font-size: 1rem;
+    }
+
+    button{
+        background-color: transparent;
+        border: none;
+        font-size: 1.5rem;
+        
+    }
+
+    button:hover{
+        cursor: pointer;
+        color: $positive-clr;
+    }
+}
+
+.tint-fadeOut{
+    animation: fadeOut 0.5s ease-in-out;
+}
+
 @media screen and (max-width: 1200px) {
 
     section.menu{
@@ -703,4 +784,18 @@ footer{
         flex-flow: column;
     }
     
+    .tint{
+        .winner{
+            font-size: 1.5rem;
+        }
+    
+        .won-text{
+            font-size: 0.8rem;
+        }
+    
+        button{
+            font-size: 1.2rem;
+            
+        }
+    }
 }

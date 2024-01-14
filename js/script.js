@@ -9,34 +9,19 @@ const GAMEBOARD = (function(){
         const cellContents = document.querySelectorAll(".cell span");
         const cells = document.querySelectorAll(".cell");
 
+
+        cellContents.forEach(cellContent =>{
+            cellContent.innerText = "";
+        })
+
         gameboardArr.forEach((cell, index)=>{
             gameboardArr[index] = "";
         })
-
-        // cellContents.forEach(cellContent=>{
-        //     cellContent.classList.add("scaleIn");
-
-        //     setTimeout(()=>{
-        //         cellContent.innerText = "";
-        //         cellContent.classList.remove("scaleIn");
-        //     }, 500)
-        // })
 
         cells.forEach(cell =>{
             if(cell.classList.contains("winning-cell")){
                 cell.classList.remove("winning-cell");
             }
-        })
-
-        // setTimeout(()=>{
-        //     cellContents.forEach(cellContent =>{
-        //         cellContent.innerText = "";
-        //         cellContent.classList.remove("marker-fadeOut");
-        //     })
-        // }, 500)
-
-        cellContents.forEach(cellContent =>{
-            cellContent.innerText = "";
         })
         
     }
@@ -87,42 +72,37 @@ const GAMEBOARD = (function(){
                     markerPlacedAnimation(cellContent);
                     GAME.nextMove(); 
 
-                    const checkWinnerObj = GAME.detectRoundWinner();
+                    const roundWinner = GAME.detectRoundWinner();
 
-                    if(checkWinnerObj.winner != null){
+                    if(roundWinner != null){
                         // Winner State
-                        if(checkWinnerObj.winner == PLAYER.getPlayer1()){
-                            // roundWinner(checkWinnerObj.winner)
-                            // markWinningCells(checkWinnerObj.winningCells);
+                        if(roundWinner == PLAYER.getPlayer1()){
+                            // roundWinner(roundWinner.winner)
+                            // markWinningCells(roundWinner.winningCells);
 
                             PLAYER.prepAttack(PLAYER.getPlayer1(), PLAYER.getPlayer2());
                             GAME.updateUIAttacked();
                         }
-                        else if (checkWinnerObj.winner == PLAYER.getPlayer2()){
+                        else if (roundWinner == PLAYER.getPlayer2()){
 
                             PLAYER.prepAttack(PLAYER.getPlayer2(), PLAYER.getPlayer1());
                             GAME.updateUIAttacked();
                         }
                         // Draw State
-                        else if(checkWinnerObj.winner == "draw"){
+                        else if(roundWinner == "draw"){
                             // Inflict damage to both
                         } 
 
                         let gameWinner = GAME.detectGameWinner();
 
                         if(gameWinner == PLAYER.getPlayer1()){
-                            prompt("Show Modal: Player 1 Won! Play again?")
+                            GAME.winnerPostScreen("p1");
                         }
                         else if(gameWinner == PLAYER.getPlayer2()){
-                            prompt("Show Modal: Player 2 Won! Play again?")
-                        }
-                        else if(gameWinner == PLAYER.getPlayer2()){
-                            prompt("Show Modal: Draw! Play again?")
+                            GAME.winnerPostScreen("p2");
                         }
                         else if (gameWinner == null){
                             GAME.toggleGameInProgress();
-                            
-                            // GAWIN YUNG ANIMATION DINE PATI YUNG SA ANNOUNCER
 
                             setTimeout(()=>{
                                 GAME.toggleGameInProgress();
@@ -166,6 +146,29 @@ const GAME = (function(){
         return currentTurn;
     }
 
+    function winnerPostScreen(winnerCode){
+        const tint = document.querySelector(".tint");
+        const winner = tint.querySelector(".winner");
+        let winnerObj;
+
+        if(winnerCode == "p1") {
+            winnerObj = PLAYER.getPlayer1();
+        }
+        else if (winnerCode == "p2"){
+            winnerObj = PLAYER.getPlayer2();
+        } 
+
+        if(winnerObj.difficulty == null){
+            winner.innerText = winnerCode == "p1" ? `Player 1 (${winnerObj.character})`: `Player 2 (${winnerObj.character})`;
+        }
+        else{
+            winner.innerText = winnerObj.difficulty == "baby" ? `Bot [Baby] (${winnerObj.character})` : `Bot [Crazy] (${winnerObj.character})`;
+        }
+
+
+        tint.style.display = "flex";
+    }
+
     function toggleGameInProgress(){
         gameInProgress = gameInProgress ? false : true;
     }
@@ -176,16 +179,14 @@ const GAME = (function(){
 
     function startGame(){
         toggleGameInProgress();
+
         currentTurn = PLAYER.getPlayer1();
         winner = null;
+
         GAMEBOARD.resetGameboard();
 
         GAMEBOARD.addListenerToCell();
         PLAYER.addMarker();
-    }
-
-    function endGame(winner){
-        console.log(winner);
     }
 
     function roundWinner(winner){
@@ -202,11 +203,33 @@ const GAME = (function(){
     }
 
     function updateUIAttacked(){
-        console.log("Player 1 HP: " + PLAYER.getPlayer1().hp);
-        console.log("Player 2 HP: " + PLAYER.getPlayer2().hp);
+        const p1HpUI = document.querySelector(".game .p1 .inner");
+        const p2HpUI = document.querySelector(".game .p2 .inner");
+
+        console.log(p1HpUI)
+        console.log(p2HpUI)
+
+        // 600
+        const p1OrigHealth = PLAYER.getAvatarArr()[PLAYER.getPlayer1().originIndex].hp;
+        const p2OrigHealth = PLAYER.getAvatarArr()[PLAYER.getPlayer2().originIndex].hp;
+
+        // 500
+        const p1CurrentHealth = PLAYER.getPlayer1().hp;
+        const p2CurrentHealth = PLAYER.getPlayer2().hp;
+
+        // (500/600) * 100
+        let p1HpPercentage = (p1CurrentHealth / p1OrigHealth) * 100;
+        let p2HpPercentage = (p2CurrentHealth / p2OrigHealth) * 100;
+
+        // If below 0 make it 0
+        p1HpPercentage = p1HpPercentage < 0 ? 0 : p1HpPercentage;
+        p2HpPercentage = p2HpPercentage < 0 ? 0 : p2HpPercentage;
+
+        p1HpUI.style.width = `${p1HpPercentage}%`;
+        p2HpUI.style.width = `${p2HpPercentage}%`;
     }
 
-    // Returns an object with winner result and cells that won the game
+    // Returns round winner winner
     function detectRoundWinner(){
         let winner = null;
         let winningCells = null;
@@ -279,7 +302,7 @@ const GAME = (function(){
 
         if(winningCells != null) GAMEBOARD.markWinningCells(winningCells);
 
-        return {winner};
+        return winner;
     }
 
     function detectGameWinner(){
@@ -319,13 +342,13 @@ const GAME = (function(){
         getGameInProgress,
         isGameboardFull,
         startGame,
-        endGame,
         nextMove,
         detectRoundWinner,
         updateUIAttacked,
         roundWinner,
         detectGameWinner,
         toggleGameInProgress,
+        winnerPostScreen,
     };
 })();
 
@@ -339,7 +362,7 @@ const PLAYER = (function(){
             name: "M. Bison", 
             img: "a1",
             hp: 600,
-            dmg: 80,
+            dmg: 1000,
             crit: 0.3,
             skill: "Heavy Hitter",
             skillDesc: "Each attack deals an additional 10% damage.",
@@ -579,7 +602,8 @@ const WEBMANAGER = (function(){
 
         // Add listener to back in game
         document.querySelector(".game .btn-container").addEventListener("click", resetAnimGameToMenu);
-        
+        document.querySelector(".tint button").addEventListener("click", resetAnimGameToMenu);
+
         // Add controls to buttons in menu
         addControlsToMenu();
     }
@@ -1019,6 +1043,26 @@ const WEBMANAGER = (function(){
                 p2Game.classList.remove("appear-r-to-l");
             }
         },500)
+
+        GAME.toggleGameInProgress();
+        GAMEBOARD.resetGameboard();
+
+        try {
+            const tint = document.querySelector(".tint");
+
+            tint.classList.add("tint-fadeOut");
+
+            document.querySelectorAll(".game .inner").forEach(inner=>{
+                inner.removeAttribute("style");
+            })
+
+            setTimeout(()=>{
+                tint.classList.remove("tint-fadeOut");
+                tint.style.display = "none";
+            }, 400)
+        } catch (error) {
+            
+        }
     }
 
     function removeInterval(interval){
