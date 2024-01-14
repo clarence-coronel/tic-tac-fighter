@@ -561,7 +561,9 @@ const PLAYER = (function(){
                 attacker.hp = 700;
                 uniqueMonologue += `<br><span class="name">${attackerName}</span> recovered all <span class="heal">missing health</span> due Healing Mirage skill . `;
             }
-            uniqueMonologue += `<br><span class="name">${attackerName}</span> used Healing Mirage skill but failed. `;
+            else{
+                uniqueMonologue += `<br><span class="name">${attackerName}</span> used Healing Mirage skill but failed. `;
+            }
         }
 
         if(defender.character == "Poison"){
