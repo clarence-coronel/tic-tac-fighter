@@ -551,9 +551,12 @@ const PLAYER = (function(){
             uniqueMonologue += `<br><span class="name">${defenderName}</span> has reduced ${parseFloat((defender.dmg * 0.05).toFixed(2))} damage stat due to Debilitating Strike. `;
         }
         if(attacker.character == "Sakura"){
-            attacker.crit += ((attacker.hp/500) * 100) * 0.6;
-            // Base Critical Strike Chance+Missing Health Percentage×Modifier
+            attacker.crit += ((attacker.hp/500)) * 0.2;
 
+            if(attacker.crit > 1) attacker.crit = 1;
+            
+            // Base Critical Strike Chance+Missing Health Percentage×Modifier
+            console.log(attacker.crit)
             uniqueMonologue += `<br><span class="name">${attackerName}</span> has increased critical chance due to Lethal Desperation skill. `;
         }
         if(attacker.character == "Karin"){
