@@ -110,7 +110,7 @@ const GAMEBOARD = (function(){
                                 GAME.toggleGameInProgress();
                                 GAMEBOARD.resetGameboard();
                                 GAME.displayCurrentTurn();
-                            }, 3000)
+                            }, 6000)
                         }
                     }
                     else{
@@ -379,16 +379,16 @@ const PLAYER = (function(){
             img: "a1",
             hp: 600,
             dmg: 80,
-            crit: 0.3,
+            crit: 0.2,
             skill: "Heavy Hitter",
-            skillDesc: "Each attack deals an additional 10% damage.",
+            skillDesc: "Each attack deals an additional 15% damage.",
         }, 
         {
             name: "Poison", 
             img: "a2",
-            hp: 800, 
+            hp: 450, 
             dmg: 40,
-            crit: 0.4,
+            crit: 0.5,
             skill: "Poison Armor",
             skillDesc: "Receiving damage inflicts poison to the attacker dealing 50 damage.",
         },
@@ -480,44 +480,48 @@ const PLAYER = (function(){
         let isCrit = rollDice(attacker.crit);
         let uniqueMonologue = "";
 
-        if(attacker.name == "M. Bison"){
-            dmg += dmg*0.1;
+        let attackerName; 
+        let defenderName;
+        if(attacker.playerNum == 1) attackerName = `Player 1 (${attacker.character})`;
+        else if(attacker.playerNum == 2) attackerName = `Player 2 (${attacker.character})`;
+        else if(attacker.playerNum == 3) attackerName = `Bot [Baby] (${attacker.character})`;
+        else if(attacker.playerNum == 3) attackerName = `Bot [Crazy] (${attacker.character})`;
+
+        if(defender.playerNum == 1) defenderName = `Player 1 (${defender.character})`;
+        else if(defender.playerNum == 2) defenderName = `Player 2 (${defender.character})`;
+        else if(defender.playerNum == 3) defenderName = `Bot [Baby] (${defender.character})`;
+        else if(defender.playerNum == 3) defenderName = `Bot [Crazy] (${defender.character})`;
+
+        if(isCrit) dmg *= 2;
+
+        if(attacker.character == "M. Bison"){
+            dmg += dmg*0.15;
+            uniqueMonologue += "<br>Damage increased due to Heavy Hitter skill. ";
         }
 
-        if(defender.name == "Poison"){
-            attacker.hp =- 50;
+        if(defender.character == "Poison"){
+            attacker.hp = attacker.hp - 50;
+            uniqueMonologue += `<br><span class="name">${attackerName}</span> has received <span class="reg-damage">50 damage</span> due to Poison Armor skill. `;
         }
-        if(defender.name == "Dhalsim"){
+        if(defender.character == "Dhalsim"){
             if(rollDice(0.4)){
                 dmg = 0;
             }
         }
 
         // Crit
-        if(isCrit) dmg *= 2;
+        
 
         attack(defender, dmg);
 
         const updateAnnouncer = (function(){
             const announcer = document.querySelector(".game .announcer");
-            let attackerName; 
-            let defenderName;
             let monologue;
             
-            if(attacker.playerNum == 1) attackerName = `Player 1 (${attacker.character})`;
-            else if(attacker.playerNum == 2) attackerName = `Player 2 (${attacker.character})`;
-            else if(attacker.playerNum == 3) attackerName = `Bot [Baby] (${attacker.character})`;
-            else if(attacker.playerNum == 3) attackerName = `Bot [Crazy] (${attacker.character})`;
+            if(isCrit) monologue = `<span class="loading">Loading next round...</span> <br> <span class="name">${attackerName}</span> attacked <span class="name">${defenderName}</span> for <span class="crit-damage">${dmg} critical damage<span>. `;
+            else monologue = `<span class="loading">Loading next round...</span> <br> <span class="name">${attackerName}</span> attacked <span class="name">${defenderName}</span> for <span class="reg-damage">${dmg} damage.<span> `;
 
-            if(defender.playerNum == 1) defenderName = `Player 1 (${defender.character})`;
-            else if(defender.playerNum == 2) defenderName = `Player 2 (${defender.character})`;
-            else if(defender.playerNum == 3) defenderName = `Bot [Baby] (${defender.character})`;
-            else if(defender.playerNum == 3) defenderName = `Bot [Crazy] (${defender.character})`;
-
-            if(isCrit) monologue = `<span class="name">${attackerName}</span> attacked <span class="name">${defenderName}</span> for <span class="crit-damage">${dmg} critical damage<span>. `;
-            else monologue = `<span class="name">${attackerName}</span> attacked <span class="name">${defenderName}</span> for <span class="reg-damage">${dmg} damage.<span> `;
-
-            monologue += uniqueMonologue;
+            monologue += `<span class="skill-apply">${uniqueMonologue}</span>`;
 
             announcer.innerHTML = monologue;
         })();
@@ -923,6 +927,7 @@ const WEBMANAGER = (function(){
         const innerHealth = document.querySelectorAll(".inner");
         const gameboard = document.querySelector(".gameboard");
         const announcer = document.querySelector(".game .announcer");
+        announcer.innerHTML = "";
         
 
         // Remove animation from starting page in menu

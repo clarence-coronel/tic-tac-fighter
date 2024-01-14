@@ -214,7 +214,7 @@ section.game {
   flex-flow: column;
   justify-content: space-around;
   align-items: center;
-  gap: max(2vh, 20px);
+  gap: max(1vh, 10px);
 }
 section.game div.btn-container {
   width: 100%;
@@ -307,9 +307,13 @@ section.game div.health-bar .appear-r-to-l {
 section.game div.announcer {
   font-family: "Inter", sans-serif;
   font-size: 1.5rem;
-  width: 60%;
-  height: 40px;
+  width: 90%;
+  height: 120px;
   text-align: center;
+}
+section.game div.announcer .loading {
+  font-family: inherit;
+  font-weight: 700;
 }
 section.game div.announcer .reg-damage {
   color: orange;
@@ -317,13 +321,19 @@ section.game div.announcer .reg-damage {
 section.game div.announcer .crit-damage {
   color: rgb(255, 0, 0);
 }
+section.game div.announcer .heal {
+  color: rgb(48, 219, 131);
+}
 section.game div.announcer span.name {
   font-family: "Inter", sans-serif;
   color: rgb(40, 108, 217);
 }
+section.game div.announcer span.skill-apply {
+  font-family: "Inter", sans-serif;
+}
 section.game div.gameboard {
-  width: min(90vw, 500px);
-  height: min(90vw, 500px);
+  width: min(90vw, 350px);
+  height: min(90vw, 350px);
   display: grid;
   grid-template: 1fr 1fr 1fr/1fr 1fr 1fr;
   gap: max(1vw, 10px);
@@ -333,7 +343,7 @@ section.game div.gameboard button.cell {
   background-color: white;
   border: none;
   border-radius: 10px;
-  font-size: 5rem;
+  font-size: 3rem;
   -webkit-user-select: none;
      -moz-user-select: none;
           user-select: none;
@@ -380,7 +390,7 @@ section.game div.fadeIn {
 
 section.intro {
   width: 100%;
-  min-height: 90vh;
+  min-height: 70vh;
   display: flex;
   flex-flow: column;
   justify-content: center;
@@ -615,7 +625,8 @@ footer svg:hover {
     height: 150px;
   }
   section.game div.announcer {
-    font-size: 0.8rem;
+    font-size: 0.7rem;
+    height: 120px;
   }
   section.game div.btn-container {
     padding: 0 max(4vw, 20px);
@@ -630,14 +641,19 @@ footer svg:hover {
     font-size: 1rem;
   }
   section.game div.health-bar img {
-    width: 70px;
-    height: 110px;
+    display: none;
+    width: 30px;
+    height: 60px;
+  }
+  section.game div.gameboard {
+    width: min(80vw, 280px);
+    height: min(80vw, 280px);
   }
   section.game div.gameboard button.cell {
     font-size: 3rem;
   }
   footer {
-    flex-flow: column;
+    flex-flow: column-reverse;
   }
   .tint .winner {
     font-size: 1.5rem;
