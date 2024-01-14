@@ -308,7 +308,7 @@ section.game div.announcer {
   font-family: "Inter", sans-serif;
   font-size: 1.5rem;
   width: 90%;
-  height: 120px;
+  min-height: 120px;
   text-align: center;
 }
 section.game div.announcer .loading {
@@ -644,11 +644,10 @@ footer svg:hover {
     height: 150px;
   }
   section.game div.announcer {
-    font-size: 0.7rem;
-    height: 120px;
+    font-size: 0.8rem;
   }
   section.game div.announcer button {
-    font-size: 1.5rem;
+    font-size: 1.1rem;
   }
   section.game div.btn-container {
     padding: 0 max(4vw, 20px);

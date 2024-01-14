@@ -378,7 +378,7 @@ section.game{
         font-family: "Inter", sans-serif;
         font-size: 1.5rem;
         width: 90%;
-        height: 120px;
+        min-height: 120px;
         text-align: center;
 
 
@@ -803,11 +803,11 @@ footer{
     section.game {
 
         div.announcer{
-            font-size: 0.7rem;
-            height: 120px;
+            font-size: 0.8rem;
+            // height: 120px;
 
             button{
-                font-size: 1.5rem;
+                font-size: 1.1rem;
             }
         }
 
