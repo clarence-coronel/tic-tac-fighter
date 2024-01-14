@@ -108,7 +108,7 @@ const GAMEBOARD = (function(){
                             GAME.winnerPostScreen("draw");
                         }
                         else if (gameWinner == null){
-                            GAME.toggleGameInProgress();
+                            GAME.gameInProgressFalse();
 
                             // setTimeout(()=>{
                             //     document.querySelector(".game .announcer").innerHTML = "";
@@ -186,8 +186,12 @@ const GAME = (function(){
         tint.style.display = "flex";
     }
 
-    function toggleGameInProgress(){
-        gameInProgress = gameInProgress ? false : true;
+    function gameInProgressFalse(){
+        gameInProgress = false;
+    }
+
+    function gameInProgressTrue(){
+        gameInProgress = true;
     }
 
     function getGameInProgress(){
@@ -195,7 +199,7 @@ const GAME = (function(){
     }
 
     function startGame(){
-        toggleGameInProgress();
+        GAME.gameInProgressTrue();
 
         currentTurn = PLAYER.getPlayer1();
         winner = null;
@@ -370,6 +374,8 @@ const GAME = (function(){
     return {
         getCurrentTurn, 
         getGameInProgress,
+        gameInProgressFalse,
+        gameInProgressTrue,
         isGameboardFull,
         startGame,
         nextMove,
@@ -377,7 +383,6 @@ const GAME = (function(){
         updateUIAttacked,
         // roundWinner,
         detectGameWinner,
-        toggleGameInProgress,
         winnerPostScreen,
         displayCurrentTurn,
     };
@@ -534,8 +539,8 @@ const PLAYER = (function(){
         }
         if(attacker.character == "Blanka"){
             attacker.hp += (dmg * 0.6);
-            if(attacker.hp > 300) attacker.hp = 300;
-
+            if(attacker.hp > 200) attacker.hp = 200;
+            
             uniqueMonologue += `<br>${attackerName} healed for <span class="heal">${dmg * 0.6} health</span> due to Life Steal skill. `;
         }
         if(attacker.character == "Guile"){
@@ -601,7 +606,7 @@ const PLAYER = (function(){
                 
                 btn.addEventListener("click", ()=>{
                     document.querySelector(".game .announcer").innerHTML = "";
-                    GAME.toggleGameInProgress();
+                    GAME.gameInProgressTrue();
                     GAMEBOARD.resetGameboard();
                     GAME.displayCurrentTurn();    
                 })
@@ -1182,7 +1187,7 @@ const WEBMANAGER = (function(){
             }
         },500)
 
-        GAME.toggleGameInProgress();
+        GAME.gameInProgressFalse();
         GAMEBOARD.resetGameboard();
 
         try {
