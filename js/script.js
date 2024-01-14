@@ -516,7 +516,7 @@ const PLAYER = (function(){
 
         if(attacker.character == "M. Bison"){
             dmg += dmg*0.15;
-            uniqueMonologue += `<br>${attackerName} has increased damage due to Heavy Hitter skill. `;
+            uniqueMonologue += `<br><span class="name">${attackerName}</span> has increased damage due to Heavy Hitter skill. `;
         }
         if(attacker.character == "Chun-Li"){
             secondAtkDmg = dmg * 0.4;
@@ -525,43 +525,43 @@ const PLAYER = (function(){
 
             attack(defender, secondAtkDmg);
 
-            if(crit) uniqueMonologue += `<br>${attackerName} twice with additional critical damage due to Double Strike skill with total of ${dmg + secondAtkDmg} damage. `;
-            else uniqueMonologue += `<br>${attackerName} twice due to Double Strike skill with total of ${dmg + secondAtkDmg} damage. `;
+            if(crit) uniqueMonologue += `<br><span class="name">${attackerName}</span> attacked again due to Double Strike skill dealing <span class="crit-damage">${secondAtkDmg} critical damage</span>. `;
+            else uniqueMonologue += `<br><span class="name">${attackerName}</span> attacked again due to Double Strike skill dealing <span class="reg-damage">${secondAtkDmg} damage</span>. `;
         }
         if(attacker.character == "Ryu"){
             if(rollDice(0.05)){
                 dmg = defender.hp;
-                uniqueMonologue += `<br>${attackerName} executed a second attack using the Hadouken skill, dealing devastating damage. `;
+                uniqueMonologue += `<br><span class="name">${attackerName}</span> executed a second attack using the Hadouken skill, dealing devastating damage. `;
             }
             else{
-                uniqueMonologue += `<br>${attackerName} executed a second attack using the Hadouken skill but missed. `;
+                uniqueMonologue += `<br><span class="name">${attackerName}</span> executed a second attack using the Hadouken skill but missed. `;
             }
         }
         if(attacker.character == "Blanka"){
             attacker.hp += (dmg * 0.5);
             if(attacker.hp > 200) attacker.hp = 200;
             
-            uniqueMonologue += `<br>${attackerName} healed for <span class="heal">${dmg * 0.5} health</span> due to Life Steal skill. `;
+            uniqueMonologue += `<br><span class="name">${attackerName}</span> healed for <span class="heal">${dmg * 0.5} health</span> due to Life Steal skill. `;
         }
         if(attacker.character == "Guile"){
 
             if(defender.dmg >= 5){
                 defender.dmg -= (defender.dmg * 0.05);
             }
-            uniqueMonologue += `<br>${defenderName} has reduced ${parseFloat((defender.dmg * 0.05).toFixed(2))} damage stat due to Debilitating Strike. `;
+            uniqueMonologue += `<br><span class="name">${defenderName}</span> has reduced ${parseFloat((defender.dmg * 0.05).toFixed(2))} damage stat due to Debilitating Strike. `;
         }
         if(attacker.character == "Sakura"){
             attacker.crit += ((attacker.hp/500) * 100) * 0.6;
             // Base Critical Strike Chance+Missing Health Percentage×Modifier
 
-            uniqueMonologue += `<br>${attackerName} has increased critical chance due to Lethal Desperation skill. `;
+            uniqueMonologue += `<br><span class="name">${attackerName}</name> has increased critical chance due to Lethal Desperation skill. `;
         }
         if(attacker.character == "Karin"){
             if(rollDice(0.1)){
                 attacker.hp = 700;
-                uniqueMonologue += `<br>${attackerName} recovered all <span class="heal">missing health</span> due Healing Mirage skill . `;
+                uniqueMonologue += `<br><span class="name">${attackerName}</span> recovered all <span class="heal">missing health</span> due Healing Mirage skill . `;
             }
-            uniqueMonologue += `<br>${attackerName} used Healing Mirage skill but failed. `;
+            uniqueMonologue += `<br><span class="name">${attackerName}</span> used Healing Mirage skill but failed. `;
         }
 
         if(defender.character == "Poison"){
