@@ -308,7 +308,18 @@ section.game div.announcer {
   font-family: "Inter", sans-serif;
   font-size: 1.5rem;
   width: 60%;
+  height: 40px;
   text-align: center;
+}
+section.game div.announcer .reg-damage {
+  color: orange;
+}
+section.game div.announcer .crit-damage {
+  color: rgb(255, 0, 0);
+}
+section.game div.announcer span.name {
+  font-family: "Inter", sans-serif;
+  color: rgb(40, 108, 217);
 }
 section.game div.gameboard {
   width: min(90vw, 500px);
@@ -336,6 +347,7 @@ section.game div.gameboard button.winning-cell {
   color: #e65e5e;
 }
 section.game div.gameboard button.cell span {
+  color: inherit;
   font-family: "Permanent Marker", cursive;
 }
 @keyframes marker-appear {

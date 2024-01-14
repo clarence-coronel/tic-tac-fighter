@@ -378,7 +378,22 @@ section.game{
         font-family: "Inter", sans-serif;
         font-size: 1.5rem;
         width: 60%;
+        height: 40px;
         text-align: center;
+
+        .reg-damage{
+            color: orange;
+        }
+
+        .crit-damage{
+            color: rgb(255, 0, 0);;
+        }
+
+        span.name{
+            font-family: "Inter", sans-serif;
+            color: rgb(40, 108, 217);
+        }
+
     }
 
     div.gameboard{
@@ -411,6 +426,7 @@ section.game{
         }
     
         button.cell span{
+            color: inherit;
             font-family: "Permanent Marker", cursive;
         }
     

@@ -32,6 +32,7 @@ const GAMEBOARD = (function(){
 
     function markWinningCells(arr = []){
         arr.forEach(index=>{
+            console.log("marking")
             let cell = document.querySelector(`.cell[data-index="${index}"]`);
             cell.classList.add("winning-cell");
         })
@@ -105,10 +106,11 @@ const GAMEBOARD = (function(){
                             GAME.toggleGameInProgress();
 
                             setTimeout(()=>{
+                                document.querySelector(".game .announcer").innerHTML = "";
                                 GAME.toggleGameInProgress();
                                 GAMEBOARD.resetGameboard();
+                                GAME.displayCurrentTurn();
                             }, 3000)
-                            
                         }
                     }
                     else{
@@ -187,10 +189,10 @@ const GAME = (function(){
 
         GAMEBOARD.addListenerToCell();
         PLAYER.addMarker();
+        displayCurrentTurn();
     }
 
     function roundWinner(winner){
-        
         if(winner == PLAYER.getPlayer1()){
             PLAYER.prepAttack(PLAYER.getPlayer1(), PLAYER.getPlayer2());
             GAME.updateUIAttacked();
@@ -203,30 +205,29 @@ const GAME = (function(){
     }
 
     function updateUIAttacked(){
-        const p1HpUI = document.querySelector(".game .p1 .inner");
-        const p2HpUI = document.querySelector(".game .p2 .inner");
-
-        console.log(p1HpUI)
-        console.log(p2HpUI)
-
-        // 600
-        const p1OrigHealth = PLAYER.getAvatarArr()[PLAYER.getPlayer1().originIndex].hp;
-        const p2OrigHealth = PLAYER.getAvatarArr()[PLAYER.getPlayer2().originIndex].hp;
-
-        // 500
-        const p1CurrentHealth = PLAYER.getPlayer1().hp;
-        const p2CurrentHealth = PLAYER.getPlayer2().hp;
-
-        // (500/600) * 100
-        let p1HpPercentage = (p1CurrentHealth / p1OrigHealth) * 100;
-        let p2HpPercentage = (p2CurrentHealth / p2OrigHealth) * 100;
-
-        // If below 0 make it 0
-        p1HpPercentage = p1HpPercentage < 0 ? 0 : p1HpPercentage;
-        p2HpPercentage = p2HpPercentage < 0 ? 0 : p2HpPercentage;
-
-        p1HpUI.style.width = `${p1HpPercentage}%`;
-        p2HpUI.style.width = `${p2HpPercentage}%`;
+        const updateHP = (function(){
+            const p1HpUI = document.querySelector(".game .p1 .inner");
+            const p2HpUI = document.querySelector(".game .p2 .inner");
+    
+            // 600
+            const p1OrigHealth = PLAYER.getAvatarArr()[PLAYER.getPlayer1().originIndex].hp;
+            const p2OrigHealth = PLAYER.getAvatarArr()[PLAYER.getPlayer2().originIndex].hp;
+    
+            // 500
+            const p1CurrentHealth = PLAYER.getPlayer1().hp;
+            const p2CurrentHealth = PLAYER.getPlayer2().hp;
+    
+            // (500/600) * 100
+            let p1HpPercentage = (p1CurrentHealth / p1OrigHealth) * 100;
+            let p2HpPercentage = (p2CurrentHealth / p2OrigHealth) * 100;
+    
+            // If below 0 make it 0
+            p1HpPercentage = p1HpPercentage < 0 ? 0 : p1HpPercentage;
+            p2HpPercentage = p2HpPercentage < 0 ? 0 : p2HpPercentage;
+    
+            p1HpUI.style.width = `${p1HpPercentage}%`;
+            p2HpUI.style.width = `${p2HpPercentage}%`;
+        })();  
     }
 
     // Returns round winner winner
@@ -300,6 +301,7 @@ const GAME = (function(){
             winner = null;
         }
 
+        
         if(winningCells != null) GAMEBOARD.markWinningCells(winningCells);
 
         return winner;
@@ -324,6 +326,19 @@ const GAME = (function(){
 
     function nextMove(){
         currentTurn = currentTurn == PLAYER.getPlayer1() ? PLAYER.getPlayer2() : PLAYER.getPlayer1();
+        displayCurrentTurn()
+    }
+
+    function displayCurrentTurn(){
+        let currentTurn = GAME.getCurrentTurn();
+        let name;
+
+        if(currentTurn.playerNum == 1) name = `Player 1 (${currentTurn.character})`;
+        else if(currentTurn.playerNum == 2) name = `Player 2 (${currentTurn.character})`;
+        else if(currentTurn.playerNum == 3) name = `Bot [Baby] (${currentTurn.character})`;
+        else if(currentTurn.playerNum == 4) name = `Bot [Crazy] (${currentTurn.character})`;
+
+        document.querySelector(".game .announcer").innerText = `${name}'s turn (${currentTurn.marker})`;
     }
 
     function isGameboardFull(){
@@ -349,6 +364,7 @@ const GAME = (function(){
         detectGameWinner,
         toggleGameInProgress,
         winnerPostScreen,
+        displayCurrentTurn,
     };
 })();
 
@@ -362,7 +378,7 @@ const PLAYER = (function(){
             name: "M. Bison", 
             img: "a1",
             hp: 600,
-            dmg: 1000,
+            dmg: 80,
             crit: 0.3,
             skill: "Heavy Hitter",
             skillDesc: "Each attack deals an additional 10% damage.",
@@ -461,6 +477,8 @@ const PLAYER = (function(){
 
     function prepAttack(attacker, defender){
         let dmg = attacker.dmg;
+        let isCrit = rollDice(attacker.crit);
+        let uniqueMonologue = "";
 
         if(attacker.name == "M. Bison"){
             dmg += dmg*0.1;
@@ -476,16 +494,40 @@ const PLAYER = (function(){
         }
 
         // Crit
-        if(rollDice(attacker.crit)) dmg *= 2;
+        if(isCrit) dmg *= 2;
 
         attack(defender, dmg);
+
+        const updateAnnouncer = (function(){
+            const announcer = document.querySelector(".game .announcer");
+            let attackerName; 
+            let defenderName;
+            let monologue;
+            
+            if(attacker.playerNum == 1) attackerName = `Player 1 (${attacker.character})`;
+            else if(attacker.playerNum == 2) attackerName = `Player 2 (${attacker.character})`;
+            else if(attacker.playerNum == 3) attackerName = `Bot [Baby] (${attacker.character})`;
+            else if(attacker.playerNum == 3) attackerName = `Bot [Crazy] (${attacker.character})`;
+
+            if(defender.playerNum == 1) defenderName = `Player 1 (${defender.character})`;
+            else if(defender.playerNum == 2) defenderName = `Player 2 (${defender.character})`;
+            else if(defender.playerNum == 3) defenderName = `Bot [Baby] (${defender.character})`;
+            else if(defender.playerNum == 3) defenderName = `Bot [Crazy] (${defender.character})`;
+
+            if(isCrit) monologue = `<span class="name">${attackerName}</span> attacked <span class="name">${defenderName}</span> for <span class="crit-damage">${dmg} critical damage<span>. `;
+            else monologue = `<span class="name">${attackerName}</span> attacked <span class="name">${defenderName}</span> for <span class="reg-damage">${dmg} damage.<span> `;
+
+            monologue += uniqueMonologue;
+
+            announcer.innerHTML = monologue;
+        })();
+   
     }
 
     function attack(target, damage){
         if(target == player1) player1.hp -= damage;
         else if(target == player2) player2.hp -= damage;
     }
-
 
     function generatePlayer(index){
         const avatar = avatarArr[index];
@@ -530,10 +572,14 @@ const PLAYER = (function(){
 
     function setPlayer1(obj){
         player1 = obj;
+        player1.playerNum = 1;
     }
 
     function setPlayer2(obj){
         player2 = obj;
+        if(player2.difficulty == null) player2.playerNum = 2;
+        else if (player2.difficulty == "baby") player2.playerNum = 3;
+        else if (player2.difficulty == "crazy") player2.playerNum = 4;
     }
 
     function getPlayer1(){
