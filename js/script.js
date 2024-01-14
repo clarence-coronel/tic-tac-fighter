@@ -554,7 +554,7 @@ const PLAYER = (function(){
             attacker.crit += ((attacker.hp/500) * 100) * 0.6;
             // Base Critical Strike Chance+Missing Health Percentage×Modifier
 
-            uniqueMonologue += `<br><span class="name">${attackerName}</name> has increased critical chance due to Lethal Desperation skill. `;
+            uniqueMonologue += `<br><span class="name">${attackerName}</span> has increased critical chance due to Lethal Desperation skill. `;
         }
         if(attacker.character == "Karin"){
             if(rollDice(0.1)){
