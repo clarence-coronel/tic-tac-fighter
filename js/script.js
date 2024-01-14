@@ -455,7 +455,7 @@ const PLAYER = (function(){
             dmg: 100,
             crit: 0.5,
             skill: "Life Steal",
-            skillDesc: "Heal 60% of damage dealt.",
+            skillDesc: "Heal 50% of damage dealt.",
         },
         {
             name: "Guile", 
@@ -538,10 +538,10 @@ const PLAYER = (function(){
             }
         }
         if(attacker.character == "Blanka"){
-            attacker.hp += (dmg * 0.6);
+            attacker.hp += (dmg * 0.5);
             if(attacker.hp > 200) attacker.hp = 200;
             
-            uniqueMonologue += `<br>${attackerName} healed for <span class="heal">${dmg * 0.6} health</span> due to Life Steal skill. `;
+            uniqueMonologue += `<br>${attackerName} healed for <span class="heal">${dmg * 0.5} health</span> due to Life Steal skill. `;
         }
         if(attacker.character == "Guile"){
 
