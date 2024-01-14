@@ -531,10 +531,10 @@ const PLAYER = (function(){
         if(attacker.character == "Ryu"){
             if(rollDice(0.05)){
                 dmg = defender.hp;
-                uniqueMonologue += `<br><span class="name">${attackerName}</span> executed a second attack using the Hadouken skill, dealing devastating damage. `;
+                uniqueMonologue += `<br><span class="name">${attackerName}</span> used Hadouken skill, dealing devastating damage. `;
             }
             else{
-                uniqueMonologue += `<br><span class="name">${attackerName}</span> executed a second attack using the Hadouken skill but missed. `;
+                uniqueMonologue += `<br><span class="name">${attackerName}</span> used the Hadouken skill but missed. `;
             }
         }
         if(attacker.character == "Blanka"){
