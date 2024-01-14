@@ -557,7 +557,7 @@ const PLAYER = (function(){
 
             // Base Critical Strike Chance+Missing Health Percentage×Modifier
             // console.log(attacker.crit)
-            uniqueMonologue += `<br><span class="name">${attackerName}</span> has increased critical chance due to Lethal Desperation skill. `;
+            uniqueMonologue += `<br><span class="name">${attackerName}</span> gains additional critical chance permanently due to Lethal Desperation skill. `;
         }
         if(attacker.character == "Karin"){
             if(rollDice(0.1)){
