@@ -412,8 +412,10 @@ section.intro {
   gap: max(5vh, 40px);
 }
 section.intro .upper-intro {
+  width: 60%;
   display: flex;
   flex-flow: row nowrap;
+  justify-content: center;
   gap: max(3vw, 30px);
   font-size: 5rem;
 }
