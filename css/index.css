@@ -331,6 +331,20 @@ section.game div.announcer span.name {
 section.game div.announcer span.skill-apply {
   font-family: "Inter", sans-serif;
 }
+section.game div.announcer button {
+  display: block;
+  background-color: transparent;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  margin: 0 auto;
+  margin-top: max(2vh, 10px);
+  font-size: 2rem;
+}
+section.game div.announcer button:hover {
+  cursor: pointer;
+  color: #e65e5e;
+}
 section.game div.gameboard {
   width: min(90vw, 350px);
   height: min(90vw, 350px);
@@ -555,6 +569,9 @@ footer svg:hover {
   font-family: "Inter", sans-serif;
   font-size: 1rem;
 }
+.tint .draw {
+  color: rgb(146, 143, 143);
+}
 .tint button {
   background-color: transparent;
   border: none;
@@ -627,6 +644,9 @@ footer svg:hover {
   section.game div.announcer {
     font-size: 0.7rem;
     height: 120px;
+  }
+  section.game div.announcer button {
+    font-size: 1.5rem;
   }
   section.game div.btn-container {
     padding: 0 max(4vw, 20px);

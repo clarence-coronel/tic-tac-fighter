@@ -381,6 +381,7 @@ section.game{
         height: 120px;
         text-align: center;
 
+
         .loading{
             font-family: inherit;
             font-weight: 700;
@@ -405,6 +406,25 @@ section.game{
 
         span.skill-apply{
             font-family: "Inter", sans-serif;
+        }
+
+        button{
+            display: block;
+            background-color: transparent;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 0 auto;
+            margin-top: max(2vh, 10px);
+            font-size: 2rem;
+            // font-weight: 700;
+            // font-family: "Inter", sans-serif;
+        }
+
+        button:hover{
+            cursor: pointer;
+            // border-color: $positive-clr;
+            color: $positive-clr;
         }
 
     }
@@ -674,6 +694,10 @@ footer{
         font-size: 1rem;
     }
 
+    .draw{
+        color: rgb(146, 143, 143);
+    }
+
     button{
         background-color: transparent;
         border: none;
@@ -779,6 +803,10 @@ footer{
         div.announcer{
             font-size: 0.7rem;
             height: 120px;
+
+            button{
+                font-size: 1.5rem;
+            }
         }
 
         div.btn-container{

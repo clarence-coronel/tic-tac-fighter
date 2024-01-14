@@ -91,7 +91,9 @@ const GAMEBOARD = (function(){
                         }
                         // Draw State
                         else if(roundWinner == "draw"){
-                            // Inflict damage to both
+                            PLAYER.prepAttack(PLAYER.getPlayer1(), PLAYER.getPlayer2());
+                            PLAYER.prepAttack(PLAYER.getPlayer2(), PLAYER.getPlayer1(), true);
+                            GAME.updateUIAttacked();
                         } 
 
                         let gameWinner = GAME.detectGameWinner();
@@ -102,15 +104,18 @@ const GAMEBOARD = (function(){
                         else if(gameWinner == PLAYER.getPlayer2()){
                             GAME.winnerPostScreen("p2");
                         }
+                        else if(gameWinner == "draw"){
+                            GAME.winnerPostScreen("draw");
+                        }
                         else if (gameWinner == null){
                             GAME.toggleGameInProgress();
 
-                            setTimeout(()=>{
-                                document.querySelector(".game .announcer").innerHTML = "";
-                                GAME.toggleGameInProgress();
-                                GAMEBOARD.resetGameboard();
-                                GAME.displayCurrentTurn();
-                            }, 6000)
+                            // setTimeout(()=>{
+                            //     document.querySelector(".game .announcer").innerHTML = "";
+                            //     GAME.toggleGameInProgress();
+                            //     GAMEBOARD.resetGameboard();
+                            //     GAME.displayCurrentTurn();
+                            // }, 1000)
                         }
                     }
                     else{
@@ -151,23 +156,33 @@ const GAME = (function(){
     function winnerPostScreen(winnerCode){
         const tint = document.querySelector(".tint");
         const winner = tint.querySelector(".winner");
+        let wonText = tint.querySelector(".won-text");
+
         let winnerObj;
 
-        if(winnerCode == "p1") {
-            winnerObj = PLAYER.getPlayer1();
-        }
-        else if (winnerCode == "p2"){
-            winnerObj = PLAYER.getPlayer2();
-        } 
-
-        if(winnerObj.difficulty == null){
-            winner.innerText = winnerCode == "p1" ? `Player 1 (${winnerObj.character})`: `Player 2 (${winnerObj.character})`;
+        if(winnerCode == "draw"){
+            wonText.innerText = "DRAW";
+            wonText.classList.add("draw");
+            winner.innerText = "";
         }
         else{
-            winner.innerText = winnerObj.difficulty == "baby" ? `Bot [Baby] (${winnerObj.character})` : `Bot [Crazy] (${winnerObj.character})`;
+            if(winnerCode == "p1") {
+                winnerObj = PLAYER.getPlayer1();
+            }
+            else if (winnerCode == "p2"){
+                winnerObj = PLAYER.getPlayer2();
+            } 
+    
+            if(winnerObj.difficulty == null){
+                wonText.innerText = "WINNER";
+                winner.innerText = winnerCode == "p1" ? `Player 1 (${winnerObj.character})`: `Player 2 (${winnerObj.character})`;
+            }
+            else{
+                wonText.innerText = "WINNER";
+                winner.innerText = winnerObj.difficulty == "baby" ? `Bot [Baby] (${winnerObj.character})` : `Bot [Crazy] (${winnerObj.character})`;
+            }
         }
-
-
+        
         tint.style.display = "flex";
     }
 
@@ -184,6 +199,7 @@ const GAME = (function(){
 
         currentTurn = PLAYER.getPlayer1();
         winner = null;
+        document.querySelector(".won-text").classList.remove("draw");
 
         GAMEBOARD.resetGameboard();
 
@@ -192,17 +208,16 @@ const GAME = (function(){
         displayCurrentTurn();
     }
 
-    function roundWinner(winner){
-        if(winner == PLAYER.getPlayer1()){
-            PLAYER.prepAttack(PLAYER.getPlayer1(), PLAYER.getPlayer2());
-            GAME.updateUIAttacked();
-        }
-        else if(winner == PLAYER.getPlayer2()){
-            PLAYER.prepAttack(PLAYER.getPlayer2(), PLAYER.getPlayer2());
-            GAME.updateUIAttacked();
-        }
-        
-    }
+    // function roundWinner(winner){
+    //     if(winner == PLAYER.getPlayer1()){
+    //         PLAYER.prepAttack(PLAYER.getPlayer1(), PLAYER.getPlayer2());
+    //         GAME.updateUIAttacked();
+    //     }
+    //     else if(winner == PLAYER.getPlayer2()){
+    //         PLAYER.prepAttack(PLAYER.getPlayer2(), PLAYER.getPlayer2());
+    //         GAME.updateUIAttacked();
+    //     }
+    // }
 
     function updateUIAttacked(){
         const updateHP = (function(){
@@ -360,7 +375,7 @@ const GAME = (function(){
         nextMove,
         detectRoundWinner,
         updateUIAttacked,
-        roundWinner,
+        // roundWinner,
         detectGameWinner,
         toggleGameInProgress,
         winnerPostScreen,
@@ -405,19 +420,19 @@ const PLAYER = (function(){
             name: "Chun-Li", 
             img: "a4",
             hp: 500, 
-            dmg: 50,
+            dmg: 40,
             crit: 0.5,
             skill: "Double Strike",
-            skillDesc: "Attack twice but deals only 40% damage on the second attack.",
+            skillDesc: "Execute two attacks, ensuring the second attack hits with 100% accuracy and no debuff but inflicts only 40% of the damage compared to the first attack.",
         },
         {
             name: "Ryu", 
             img: "a5",
             hp: 500, 
-            dmg: 80,
-            crit: 0.4,
+            dmg: 60,
+            crit: 0.65,
             skill: "Hadouken",
-            skillDesc: "Attacking has a 5% chance of dealing instant death to the enemy.",
+            skillDesc: "Attack a second time that can cause instant death to the enemy but has a 5% chance of hitting.",
         },
         {
             name: "Zangief", 
@@ -475,7 +490,7 @@ const PLAYER = (function(){
     let player1 = null;
     let player2 = null;
 
-    function prepAttack(attacker, defender){
+    function prepAttack(attacker, defender, isDraw=false){
         let dmg = attacker.dmg;
         let isCrit = rollDice(attacker.crit);
         let uniqueMonologue = "";
@@ -496,7 +511,50 @@ const PLAYER = (function(){
 
         if(attacker.character == "M. Bison"){
             dmg += dmg*0.15;
-            uniqueMonologue += "<br>Damage increased due to Heavy Hitter skill. ";
+            uniqueMonologue += `<br>${attackerName} has increased damage due to Heavy Hitter skill. `;
+        }
+        if(attacker.character == "Chun-Li"){
+            secondAtkDmg = dmg * 0.4;
+            const crit = rollDice(attacker.crit);
+            if(crit) secondAtkDmg *= 2;
+
+            attack(defender, secondAtkDmg);
+
+            if(crit) uniqueMonologue += `<br>${attackerName} twice with additional critical damage due to Double Strike skill with total of ${dmg + secondAtkDmg} damage. `;
+            else uniqueMonologue += `<br>${attackerName} twice due to Double Strike skill with total of ${dmg + secondAtkDmg} damage. `;
+        }
+        if(attacker.character == "Ryu"){
+            if(rollDice(0.05)){
+                dmg = defender.hp;
+                uniqueMonologue += `<br>${attackerName} executed a second attack using the Hadouken skill, dealing devastating damage. `;
+            }
+            else{
+                uniqueMonologue += `<br>${attackerName} executed a second attack using the Hadouken skill but missed. `;
+            }
+        }
+        if(attacker.character == "Blanka"){
+            attacker.hp += (dmg * 0.6);
+            if(attacker.hp > 300) attacker.hp = 300;
+
+            uniqueMonologue += `<br>${attackerName} healed for <span class="heal">${dmg * 0.6} health</span> due to Life Steal skill. `;
+        }
+        if(attacker.character == "Guile"){
+            defender.dmg -= (defender.dmg * 0.05);
+
+            uniqueMonologue += `<br>${defenderName} has reduced ${defender.dmg * 0.05} damage stat due to Debilitating Strike. `;
+        }
+        if(attacker.character == "Sakura"){
+            attacker.crit += ((attacker.hp/500) * 100) * 0.6;
+            // Base Critical Strike Chance+Missing Health Percentage×Modifier
+
+            uniqueMonologue += `<br>${attackerName} has increased critical chance due to Lethal Desperation skill. `;
+        }
+        if(attacker.character == "Karin"){
+            if(rollDice(0.1)){
+                attacker.hp = 700;
+                uniqueMonologue += `<br>${attackerName} recovered all <span class="heal">missing health</span> due Healing Mirage skill . `;
+            }
+            uniqueMonologue += `<br>${attackerName} used Healing Mirage skill but failed. `;
         }
 
         if(defender.character == "Poison"){
@@ -506,24 +564,51 @@ const PLAYER = (function(){
         if(defender.character == "Dhalsim"){
             if(rollDice(0.4)){
                 dmg = 0;
+                uniqueMonologue += `<br><span class="name">${defenderName}</span> has received no damage due to Elusive Evasion skill. `;
             }
         }
+        if(defender.character == "Zangief"){
+            let reducedDmg = dmg * 0.2;
+            dmg *= 0.8;
+            uniqueMonologue += `<br><span class="name">${defenderName}</span> has received ${reducedDmg} reduced damaged due to Muscle Shield skill. `;
+        }
 
-        // Crit
         
-
+    
         attack(defender, dmg);
 
         const updateAnnouncer = (function(){
             const announcer = document.querySelector(".game .announcer");
             let monologue;
             
-            if(isCrit) monologue = `<span class="loading">Loading next round...</span> <br> <span class="name">${attackerName}</span> attacked <span class="name">${defenderName}</span> for <span class="crit-damage">${dmg} critical damage<span>. `;
-            else monologue = `<span class="loading">Loading next round...</span> <br> <span class="name">${attackerName}</span> attacked <span class="name">${defenderName}</span> for <span class="reg-damage">${dmg} damage.<span> `;
+            if(isCrit) monologue = `<span class="name">${attackerName}</span> attacked <span class="name">${defenderName}</span> for <span class="crit-damage">${dmg} critical damage<span>. `;
+            else monologue = `<span class="name">${attackerName}</span> attacked <span class="name">${defenderName}</span> for <span class="reg-damage">${dmg} damage.<span> `;
 
             monologue += `<span class="skill-apply">${uniqueMonologue}</span>`;
 
-            announcer.innerHTML = monologue;
+            if(isDraw){
+                announcer.innerHTML = "Draw! Both fighters attacked at the same time.";
+            }
+            else announcer.innerHTML = monologue;
+
+            
+
+            if(PLAYER.getPlayer1().hp > 0 && PLAYER.getPlayer2().hp > 0){
+                const btn = document.createElement("button");
+                btn.innerText = "Continue";
+                
+                btn.addEventListener("click", ()=>{
+                    document.querySelector(".game .announcer").innerHTML = "";
+                    GAME.toggleGameInProgress();
+                    GAMEBOARD.resetGameboard();
+                    GAME.displayCurrentTurn();    
+                })
+
+                
+                announcer.appendChild(btn);
+            }
+            
+            
         })();
    
     }
