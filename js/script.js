@@ -5,6 +5,16 @@ const GAMEBOARD = (function(){
         '', '', '',
     ]
 
+    function getEmptySquares(gameboard){
+        let emptySquares = [];
+
+        gameboard.forEach((square, index)=>{
+            if(square == "") emptySquares.push(index);
+        });
+
+        return emptySquares;
+    }
+
     function resetGameboard(){
         const cellContents = document.querySelectorAll(".cell span");
         const cells = document.querySelectorAll(".cell");
@@ -49,31 +59,31 @@ const GAMEBOARD = (function(){
 
                 const cellContent = cell.querySelector("span");
                 if(GAME.getGameInProgress() && cellContent.innerText == "" && gameboardArr[index] == ""){
-                    if(GAME.getCurrentTurn() == PLAYER.getPlayer1() && PLAYER.getPlayer1().difficulty == null){
+                    if(GAME.getCurrentTurn() == PLAYER.getPlayer1()){
                         cellContent.innerText = PLAYER.getPlayer1().marker;
                         gameboardArr[index] = PLAYER.getPlayer1().marker;
                     }
-                    else if(GAME.getCurrentTurn() == PLAYER.getPlayer2() && PLAYER.getPlayer2().difficulty == null){
+                    else if(GAME.getCurrentTurn() == PLAYER.getPlayer2()){
                         cellContent.innerText = PLAYER.getPlayer2().marker;
                         gameboardArr[index] = PLAYER.getPlayer2().marker;
                     }
-                    else if(GAME.getCurrentTurn() == PLAYER.getPlayer1() && PLAYER.getPlayer1().difficulty == "baby"){
-                        alert("p1 baby code here")
-                    }
-                    else if(GAME.getCurrentTurn() == PLAYER.getPlayer1() && PLAYER.getPlayer1().difficulty == "crazy"){
-                        alert("p1 crazy code here")
-                    }
-                    else if(GAME.getCurrentTurn() == PLAYER.getPlayer2() && PLAYER.getPlayer2().difficulty == "baby"){
-                        alert("p2 baby code here")
-                    }
-                    else if(GAME.getCurrentTurn() == PLAYER.getPlayer2() && PLAYER.getPlayer2().difficulty == "crazy"){
-                        alert("p2 crazy code here")
-                    }
+                    // else if(GAME.getCurrentTurn() == PLAYER.getPlayer1() && PLAYER.getPlayer1().difficulty == "baby"){
+                    //     alert("p1 baby code here")
+                    // }
+                    // else if(GAME.getCurrentTurn() == PLAYER.getPlayer1() && PLAYER.getPlayer1().difficulty == "crazy"){
+                    //     alert("p1 crazy code here")
+                    // }
+                    // else if(GAME.getCurrentTurn() == PLAYER.getPlayer2() && PLAYER.getPlayer2().difficulty == "baby"){
+                    //     alert("p2 baby code here")
+                    // }
+                    // else if(GAME.getCurrentTurn() == PLAYER.getPlayer2() && PLAYER.getPlayer2().difficulty == "crazy"){
+                    //     alert("p2 crazy code here")
+                    // }
 
                     markerPlacedAnimation(cellContent);
                     GAME.nextMove(); 
 
-                    const roundWinner = GAME.detectRoundWinner();
+                    const roundWinner = GAME.detectRoundWinner(GAMEBOARD.getGameboardArr());
 
                     if(roundWinner != null){
                         // Winner State
@@ -85,7 +95,7 @@ const GAMEBOARD = (function(){
                             GAME.updateUIAttacked();
                         }
                         else if (roundWinner == PLAYER.getPlayer2()){
-
+                            console.log(PLAYER.getPlayer2());
                             PLAYER.prepAttack(PLAYER.getPlayer2(), PLAYER.getPlayer1());
                             GAME.updateUIAttacked();
                         }
@@ -138,7 +148,7 @@ const GAMEBOARD = (function(){
         }, 200);
     }
 
-    return {getGameboardArr, resetGameboard, addListenerToCell, markWinningCells};
+    return {getGameboardArr, resetGameboard, addListenerToCell, markWinningCells, getEmptySquares};
 })();
 
 const GAME = (function(){
@@ -151,6 +161,10 @@ const GAME = (function(){
 
     function getCurrentTurn(){
         return currentTurn;
+    }
+
+    function changeTurn(){
+        currentTurn = currentTurn == PLAYER.getPlayer1() ? PLAYER.getPlayer2() : PLAYER.getPlayer1();
     }
 
     function winnerPostScreen(winnerCode){
@@ -250,13 +264,13 @@ const GAME = (function(){
     }
 
     // Returns round winner winner
-    function detectRoundWinner(){
+    function detectRoundWinner(gameboard, isBotCheck = false){
         let winner = null;
         let winningCells = null;
         const markerA = PLAYER.getPlayer1().marker;
         const markerB = PLAYER.getPlayer2().marker;
 
-        let currentGameboard = GAMEBOARD.getGameboardArr();
+        let currentGameboard = gameboard;
 
         function checkHorizontal(marker){
             if (currentGameboard[0] == marker && currentGameboard[1] == marker && currentGameboard[2] == marker) {
@@ -321,7 +335,7 @@ const GAME = (function(){
         }
 
         
-        if(winningCells != null) GAMEBOARD.markWinningCells(winningCells);
+        if(winningCells != null && !isBotCheck) GAMEBOARD.markWinningCells(winningCells);
 
         return winner;
     }
@@ -344,8 +358,106 @@ const GAME = (function(){
     }
 
     function nextMove(){
-        currentTurn = currentTurn == PLAYER.getPlayer1() ? PLAYER.getPlayer2() : PLAYER.getPlayer1();
-        displayCurrentTurn()
+        changeTurn();
+
+        if(currentTurn.difficulty == "crazy"){
+            GAME.gameInProgressFalse();
+            setTimeout(()=>{
+                GAME.gameInProgressTrue();
+                aiMove(minimax(GAMEBOARD.getGameboardArr(), PLAYER.getPlayer2()));
+                GAME.gameInProgressFalse();
+
+                setTimeout(()=>{
+                    GAME.gameInProgressTrue();
+                },200)
+                
+            }, 500)
+        }
+        displayCurrentTurn();
+
+        // setTimeout(()=>{
+        //     GAME.gameInProgressTrue();
+        //     GAME.aiMove(GAME.minimax(GAMEBOARD.getGameboardArr(), PLAYER.getPlayer2()));
+        //     GAME.gameInProgressFalse();
+        //     GAME.displayCurrentTurn();
+
+        //     // Add delay so player could not almost immediately finish their round after ai
+        //     setTimeout(()=>{
+        //         GAME.gameInProgressTrue();
+        //     },500)
+        // }, 500)
+    }
+
+    function aiMove(move){
+        const cells = document.querySelectorAll(".cell");
+        const index = move.index;
+        // console.log(index);
+
+        cells.forEach(cell=>{
+            if(cell.dataset.index == index){
+                cell.click();
+            }
+        })
+    }
+
+    function minimax(stateOfBoard, player){
+        const emptySquares = GAMEBOARD.getEmptySquares(stateOfBoard);
+        const tempBoard = Array.from(stateOfBoard);
+
+        // console.table(tempBoard);
+
+        if(detectRoundWinner(tempBoard, true) == PLAYER.getPlayer1()){
+            return {score: -10};
+        }
+        else if(detectRoundWinner(tempBoard, true) == PLAYER.getPlayer2()){
+            return {score: 10};
+        }
+        else if(emptySquares.length == 0){
+            return {score: 0};
+        }
+
+        let moves = [];
+        for(let i = 0; i < emptySquares.length; i++){
+
+            let move = {};
+            move.index = emptySquares[i];
+            tempBoard[emptySquares[i]] = player.marker;
+
+            if(player == PLAYER.getPlayer2()) {
+                let result = minimax(tempBoard, PLAYER.getPlayer1());
+                move.score = result.score;
+            }
+            else{
+                let result = minimax(tempBoard, PLAYER.getPlayer2());
+                move.score = result.score;
+            }
+
+            tempBoard[emptySquares[i]] = "";
+            moves.push(move);
+        }
+
+
+        let bestMove;
+        if(player == PLAYER.getPlayer2()){
+            let bestScore = -10000;
+            for(let i = 0; i < moves.length; i++){
+                if(moves[i].score > bestScore){
+                    bestScore = moves[i].score;
+                    bestMove = i;
+                }
+            }
+        }
+        else{
+            let bestScore = 10000;
+            for(let i = 0; i < moves.length; i++){
+                if(moves[i].score < bestScore){
+                    bestScore = moves[i].score;
+                    bestMove = i;
+                }
+            }
+        }
+
+        return moves[bestMove];
     }
 
     function displayCurrentTurn(){
@@ -385,6 +497,9 @@ const GAME = (function(){
         detectGameWinner,
         winnerPostScreen,
         displayCurrentTurn,
+        changeTurn,
+        aiMove,
+        minimax,
     };
 })();
 
@@ -505,12 +620,12 @@ const PLAYER = (function(){
         if(attacker.playerNum == 1) attackerName = `Player 1 (${attacker.character})`;
         else if(attacker.playerNum == 2) attackerName = `Player 2 (${attacker.character})`;
         else if(attacker.playerNum == 3) attackerName = `Bot [Baby] (${attacker.character})`;
-        else if(attacker.playerNum == 3) attackerName = `Bot [Crazy] (${attacker.character})`;
+        else if(attacker.playerNum == 4) attackerName = `Bot [Crazy] (${attacker.character})`;
 
         if(defender.playerNum == 1) defenderName = `Player 1 (${defender.character})`;
         else if(defender.playerNum == 2) defenderName = `Player 2 (${defender.character})`;
         else if(defender.playerNum == 3) defenderName = `Bot [Baby] (${defender.character})`;
-        else if(defender.playerNum == 3) defenderName = `Bot [Crazy] (${defender.character})`;
+        else if(defender.playerNum == 4) defenderName = `Bot [Crazy] (${defender.character})`;
 
         if(isCrit) dmg *= 2;
 
@@ -613,7 +728,25 @@ const PLAYER = (function(){
                     document.querySelector(".game .announcer").innerHTML = "";
                     GAME.gameInProgressTrue();
                     GAMEBOARD.resetGameboard();
-                    GAME.displayCurrentTurn();    
+                    GAME.displayCurrentTurn(); 
+
+                    // When clicked and if its ai turn execute ai's move
+                    if(GAME.getCurrentTurn().difficulty == "crazy"){
+                        GAME.gameInProgressFalse();
+                        setTimeout(()=>{
+                            GAME.gameInProgressTrue();
+                            GAME.aiMove(GAME.minimax(GAMEBOARD.getGameboardArr(), PLAYER.getPlayer2()));
+                            GAME.gameInProgressFalse();
+                            GAME.displayCurrentTurn();
+
+                            // Add delay so player could not almost immediately finish their round after ai
+                            setTimeout(()=>{
+                                GAME.gameInProgressTrue();
+                            },200)
+                        }, 500)
+    
+                    }
+
                 })
 
                 
@@ -691,11 +824,6 @@ const PLAYER = (function(){
         return player2;
     }
 
-    function viewPlayers(){
-        console.table(player1);
-        console.table(player2);
-    }
-
     function getAvatarArr(){
         return avatarArr;
     }
@@ -722,7 +850,6 @@ const PLAYER = (function(){
         getPlayer2,
         generatePlayer,
         generateBot,
-        viewPlayers,
         addMarker,
         exchangeMarker,
         prepAttack,
@@ -1115,9 +1242,6 @@ const WEBMANAGER = (function(){
         const p1AvatarIndex = document.querySelector(".menu .p1 #avatarInput").value;
         const p2AvatarIndex = document.querySelector(".menu .p2 #avatarInput").value;
 
-        console.log("p1 " + p1AvatarIndex);
-        console.log("p2 " + p2AvatarIndex);
-
         if(document.querySelector(".menu .p1 #type").value == PLAYER.getTypeArr()[0]){
             PLAYER.setPlayer1(PLAYER.generatePlayer(p1AvatarIndex));
         }
@@ -1137,8 +1261,6 @@ const WEBMANAGER = (function(){
         else if(document.querySelector(".menu .p2 #type").value == PLAYER.getTypeArr()[2]){
             PLAYER.setPlayer2(PLAYER.generateBot(p2AvatarIndex, PLAYER.getTypeArr()[2]));
         }
-
-        PLAYER.viewPlayers();
         document.querySelector(".intro .p1").innerText = PLAYER.getPlayer1().character;
         document.querySelector(".intro .p2").innerText = PLAYER.getPlayer2().character;
     }
