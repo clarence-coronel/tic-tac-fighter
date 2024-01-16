@@ -42,7 +42,6 @@ const GAMEBOARD = (function(){
 
     function markWinningCells(arr = []){
         arr.forEach(index=>{
-            console.log("marking")
             let cell = document.querySelector(`.cell[data-index="${index}"]`);
             cell.classList.add("winning-cell");
         })
@@ -67,18 +66,6 @@ const GAMEBOARD = (function(){
                         cellContent.innerText = PLAYER.getPlayer2().marker;
                         gameboardArr[index] = PLAYER.getPlayer2().marker;
                     }
-                    // else if(GAME.getCurrentTurn() == PLAYER.getPlayer1() && PLAYER.getPlayer1().difficulty == "baby"){
-                    //     alert("p1 baby code here")
-                    // }
-                    // else if(GAME.getCurrentTurn() == PLAYER.getPlayer1() && PLAYER.getPlayer1().difficulty == "crazy"){
-                    //     alert("p1 crazy code here")
-                    // }
-                    // else if(GAME.getCurrentTurn() == PLAYER.getPlayer2() && PLAYER.getPlayer2().difficulty == "baby"){
-                    //     alert("p2 baby code here")
-                    // }
-                    // else if(GAME.getCurrentTurn() == PLAYER.getPlayer2() && PLAYER.getPlayer2().difficulty == "crazy"){
-                    //     alert("p2 crazy code here")
-                    // }
 
                     markerPlacedAnimation(cellContent);
                     GAME.nextMove(); 
@@ -88,14 +75,10 @@ const GAMEBOARD = (function(){
                     if(roundWinner != null){
                         // Winner State
                         if(roundWinner == PLAYER.getPlayer1()){
-                            // roundWinner(roundWinner.winner)
-                            // markWinningCells(roundWinner.winningCells);
-
                             PLAYER.prepAttack(PLAYER.getPlayer1(), PLAYER.getPlayer2());
                             GAME.updateUIAttacked();
                         }
                         else if (roundWinner == PLAYER.getPlayer2()){
-                            console.log(PLAYER.getPlayer2());
                             PLAYER.prepAttack(PLAYER.getPlayer2(), PLAYER.getPlayer1());
                             GAME.updateUIAttacked();
                         }
@@ -148,15 +131,20 @@ const GAMEBOARD = (function(){
         }, 200);
     }
 
-    return {getGameboardArr, resetGameboard, addListenerToCell, markWinningCells, getEmptySquares};
+    return {
+        getGameboardArr, 
+        resetGameboard, 
+        addListenerToCell, 
+        markWinningCells, 
+        getEmptySquares};
 })();
 
 const GAME = (function(){
     // Used to determine who's turn it is
     // playerA / playerB
-
     let currentTurn = null;
 
+    // Used to pause the game
     let gameInProgress = false;
 
     function getCurrentTurn(){
@@ -226,17 +214,6 @@ const GAME = (function(){
         displayCurrentTurn();
     }
 
-    // function roundWinner(winner){
-    //     if(winner == PLAYER.getPlayer1()){
-    //         PLAYER.prepAttack(PLAYER.getPlayer1(), PLAYER.getPlayer2());
-    //         GAME.updateUIAttacked();
-    //     }
-    //     else if(winner == PLAYER.getPlayer2()){
-    //         PLAYER.prepAttack(PLAYER.getPlayer2(), PLAYER.getPlayer2());
-    //         GAME.updateUIAttacked();
-    //     }
-    // }
-
     function updateUIAttacked(){
         const updateHP = (function(){
             const p1HpUI = document.querySelector(".game .p1 .inner");
@@ -263,7 +240,7 @@ const GAME = (function(){
         })();  
     }
 
-    // Returns round winner winner
+    // Returns round winner
     function detectRoundWinner(gameboard, isBotCheck = false){
         let winner = null;
         let winningCells = null;
@@ -340,6 +317,7 @@ const GAME = (function(){
         return winner;
     }
 
+    // Returns game winner
     function detectGameWinner(){
 
         let winner = null;
@@ -360,13 +338,13 @@ const GAME = (function(){
     function nextMove(){
         changeTurn();
 
-        if(currentTurn.difficulty == "crazy"){
+        if(currentTurn.difficulty != null){
             GAME.gameInProgressFalse();
             setTimeout(()=>{
                 GAME.gameInProgressTrue();
-                aiMove(minimax(GAMEBOARD.getGameboardArr(), PLAYER.getPlayer2()));
+                if(currentTurn.difficulty == "baby") aiMove(minimax(GAMEBOARD.getGameboardArr(), PLAYER.getPlayer2(), true));
+                else aiMove(minimax(GAMEBOARD.getGameboardArr(), PLAYER.getPlayer2()));
                 GAME.gameInProgressFalse();
-
                 setTimeout(()=>{
                     GAME.gameInProgressTrue();
                 },200)
@@ -400,14 +378,18 @@ const GAME = (function(){
         })
     }
 
-    function minimax(stateOfBoard, player){
+    function minimax(stateOfBoard, player, isBaby = false){
         const emptySquares = GAMEBOARD.getEmptySquares(stateOfBoard);
         const tempBoard = Array.from(stateOfBoard);
 
-        // console.table(tempBoard);
-
+        // If we reached a state were someone won or draw immediately returns score
         if(detectRoundWinner(tempBoard, true) == PLAYER.getPlayer1()){
-            return {score: -10};
+            // Adjusted if baby difficulty 50/50 chance of scoring player 1 win as 0 or -10
+            if(isBaby) {
+                let score = PLAYER.rollDice(0.5) ? 0 : -10;
+                return {score: score};
+            }
+            else return {score: -10};
         }
         else if(detectRoundWinner(tempBoard, true) == PLAYER.getPlayer2()){
             return {score: 10};
@@ -424,11 +406,11 @@ const GAME = (function(){
             tempBoard[emptySquares[i]] = player.marker;
 
             if(player == PLAYER.getPlayer2()) {
-                let result = minimax(tempBoard, PLAYER.getPlayer1());
+                let result = minimax(tempBoard, PLAYER.getPlayer1(), isBaby);
                 move.score = result.score;
             }
             else{
-                let result = minimax(tempBoard, PLAYER.getPlayer2());
+                let result = minimax(tempBoard, PLAYER.getPlayer2(), isBaby);
                 move.score = result.score;
             }
 
@@ -441,7 +423,7 @@ const GAME = (function(){
         if(player == PLAYER.getPlayer2()){
             let bestScore = -10000;
             for(let i = 0; i < moves.length; i++){
-                if(moves[i].score > bestScore){
+                if(moves[i].score >= bestScore){
                     bestScore = moves[i].score;
                     bestMove = i;
                 }
@@ -450,7 +432,7 @@ const GAME = (function(){
         else{
             let bestScore = 10000;
             for(let i = 0; i < moves.length; i++){
-                if(moves[i].score < bestScore){
+                if(moves[i].score <= bestScore){
                     bestScore = moves[i].score;
                     bestMove = i;
                 }
@@ -693,6 +675,9 @@ const PLAYER = (function(){
                 dmg = 0;
                 uniqueMonologue += `<br><span class="name">${defenderName}</span> has received no damage due to Elusive Evasion skill. `;
             }
+            else{
+                uniqueMonologue += `<br><span class="name">${defenderName}</span> used Elusive Evasion skill but failed. `;
+            }
         }
         if(defender.character == "Zangief"){
             let reducedDmg = dmg * 0.2;
@@ -731,11 +716,12 @@ const PLAYER = (function(){
                     GAME.displayCurrentTurn(); 
 
                     // When clicked and if its ai turn execute ai's move
-                    if(GAME.getCurrentTurn().difficulty == "crazy"){
+                    if(GAME.getCurrentTurn().difficulty != null){
                         GAME.gameInProgressFalse();
                         setTimeout(()=>{
                             GAME.gameInProgressTrue();
-                            GAME.aiMove(GAME.minimax(GAMEBOARD.getGameboardArr(), PLAYER.getPlayer2()));
+                            if(GAME.getCurrentTurn().difficulty == "baby") GAME.aiMove(GAME.minimax(GAMEBOARD.getGameboardArr(), PLAYER.getPlayer2(), true));
+                            else GAME.aiMove(GAME.minimax(GAMEBOARD.getGameboardArr(), PLAYER.getPlayer2()));
                             GAME.gameInProgressFalse();
                             GAME.displayCurrentTurn();
 
@@ -744,7 +730,6 @@ const PLAYER = (function(){
                                 GAME.gameInProgressTrue();
                             },200)
                         }, 500)
-    
                     }
 
                 })
@@ -853,6 +838,7 @@ const PLAYER = (function(){
         addMarker,
         exchangeMarker,
         prepAttack,
+        rollDice,
     }
 })();
 
