@@ -383,16 +383,16 @@ const GAME = (function(){
         const tempBoard = Array.from(stateOfBoard);
 
         // If we reached a state were someone won or draw immediately returns score
-        if(detectRoundWinner(tempBoard, true) == PLAYER.getPlayer1()){
+        if(detectRoundWinner(tempBoard, true) == PLAYER.getPlayer2()){
+            return {score: 1};
+        }
+        else if(detectRoundWinner(tempBoard, true) == PLAYER.getPlayer1()){
             // Adjusted if baby difficulty 50/50 chance of scoring player 1 win as 0 or -10
             if(isBaby) {
-                let score = PLAYER.rollDice(0.5) ? 0 : -10;
+                let score = PLAYER.rollDice(0.6) ? -1 : 0;
                 return {score: score};
             }
-            else return {score: -10};
-        }
-        else if(detectRoundWinner(tempBoard, true) == PLAYER.getPlayer2()){
-            return {score: 10};
+            else return {score: -1};
         }
         else if(emptySquares.length == 0){
             return {score: 0};
