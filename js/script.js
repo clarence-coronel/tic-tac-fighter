@@ -389,7 +389,7 @@ const GAME = (function(){
         else if(detectRoundWinner(tempBoard, true) == PLAYER.getPlayer1()){
             // Adjusted if baby difficulty 50/50 chance of scoring player 1 win as 0 or -10
             if(isBaby) {
-                let score = PLAYER.rollDice(0.6) ? -1 : 0;
+                let score = PLAYER.rollDice(0.5) ? -1 : 0;
                 return {score: score};
             }
             else return {score: -1};
