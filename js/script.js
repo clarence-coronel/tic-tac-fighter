@@ -140,12 +140,30 @@ const GAMEBOARD = (function(){
 })();
 
 const GAME = (function(){
+    
+    
     // Used to determine who's turn it is
     // playerA / playerB
     let currentTurn = null;
 
     // Used to pause the game
     let gameInProgress = false;
+
+    function disableCells(newVal){
+        const cells = document.querySelectorAll(".cell")
+
+        if(newVal){
+            cells.forEach(cell => {
+                cell.setAttribute("disabled", newVal)
+            })
+        }
+        else{
+            cells.forEach(cell => {
+                cell.removeAttribute("disabled")
+            })
+        }
+        
+    }
 
     function getCurrentTurn(){
         return currentTurn;
@@ -482,6 +500,7 @@ const GAME = (function(){
         changeTurn,
         aiMove,
         minimax,
+        disableCells
     };
 })();
 
@@ -708,8 +727,10 @@ const PLAYER = (function(){
             if(PLAYER.getPlayer1().hp > 0 && PLAYER.getPlayer2().hp > 0){
                 const btn = document.createElement("button");
                 btn.innerText = "Continue";
+                 GAME.disableCells(true)
                 
                 btn.addEventListener("click", ()=>{
+                    GAME.disableCells(false)
                     document.querySelector(".game .announcer").innerHTML = "";
                     GAME.gameInProgressTrue();
                     GAMEBOARD.resetGameboard();
